@@ -1,6 +1,6 @@
 import {translate,currentLanguage} from './i18n'
 import {mountAISettings} from './ai-settings'
-import {createElement, Palette, Type, FolderOpen, Image, FileCode, Upload, Settings, Sparkles} from 'lucide'
+import {createElement, Palette, Type, FolderOpen, FileCode, Upload, Settings, Sparkles} from 'lucide'
 export type Preferences = {
   uiLanguage:'zh-TW'|'en'; startup: string; autoSave: boolean; saveOnSwitch: boolean; extension: string;
   fontSize: number; lineHeight: number; zoom: number; status: boolean; toolbar: boolean; theme: string;
@@ -37,64 +37,60 @@ export function readPreferences(): Preferences {
   catch { return { ...defaults } }
 }
 type Field = { key: keyof Preferences; label: string; options?: [string, string][]; min?: number; max?: number; step?: number; check?: boolean;text?:boolean }
-type Row = { title: string; fields?: Field[]; action?: string; actionLabel?: string; description?: string }
+type Row = { title: string; fields?: Field[]; action?: string; actionLabel?: string; description?: string; group?:string }
 const pages: Record<string, Row[]> = {
-  '檔案': [
-    { title: '啟動選項', fields: [{ key: 'startup', label: '啟動選項', options: [['restore','復原上次開啟的檔案'],['new','開啟新檔']] }] },
-    { title:'大綱',fields:[{key:'outlineFold',label:'允許展開／折疊側邊欄大綱',check:true}] },
-    { title: '預設檔案類型或副檔名', fields: [{ key: 'extension', label: '副檔名', options: [['md','Markdown (.md)'],['markdown','Markdown (.markdown)'],['txt','純文字 (.txt)']] }] },
-    { title: '儲存並復原', fields: [{ key: 'autoSave', label: '自動儲存', check: true }, { key: 'saveOnSwitch', label: '在側邊欄切換檔案時自動儲存無需詢問', check: true }], action: 'drafts', actionLabel: '復原未儲存的草稿' },
-    { title: '最近位置',fields:[{key:'rememberRecent',label:'記錄最近使用的檔案與資料夾',check:true}], action: 'clearRecent', actionLabel: '清除最近使用的資料夾與檔案' },
-    { title:'檔案樹狀目錄／檔案庫',fields:[{key:'showHidden',label:'顯示隱藏的檔案與資料夾',check:true}] },
-  ],
-  '編輯器': [
-    { title:'儲存時調整縮排',fields:[{key:'tabSize',label:'縮排',options:[['2','2'],['4','4'],['8','8']]},{key:'formatOnSave',label:'整理縮排',check:true}] },
-    { title:'自動配對',fields:[{key:'autoPair',label:'自動配對括號與引號',check:true},{key:'markdownPair',label:'自動配對常用 Markdown 符號',check:true}] },
-    { title: '預設換行符號', description: '儲存檔案時使用的換行符號', fields: [{ key: 'lineEnding', label: '換行符號', options: [['preserve','保留原檔'],['lf','LF (Unix Style)'],['crlf','CRLF (Windows Style)']] }] },
-    { title: '拼字檢查', fields: [{ key: 'spellcheck', label: '啟用拼字檢查', check: true }] },
-    { title: '打字機模式', action: 'reset-focus', actionLabel: '關閉打字機／專注模式' },
-  ],
-  '圖片': [
-    { title: '圖片上傳設定',action:'settings:upload',actionLabel:'設定上傳服務…' },
-    { title: '插入圖片時…', fields:[{key:'imageCopy',label:'將本機圖片複製到文件的 .assets 資料夾',check:true}], action: 'image:local', actionLabel: '插入本機圖片…' },
-    { title: '圖片語法偏好設定', fields:[{key:'imageRelative',label:'優先使用相對路徑',check:true}] },
-    { title: '圖片顯示', fields: [{ key: 'imageWidth', label: '最大寬度（文章寬度百分比）', min: 10, max: 100 }] },
-  ],
-  'Markdown': [
-    {title:'Markdown 語法偏好設定',fields:[{key:'headingStyle',label:'標題樣式',options:[['atx','atx (#)'],['setext','setext (=== / ---)']]},{key:'bulletStyle',label:'無次序清單',options:[['-','-'],['*','*'],['+','+']]},{key:'orderedIncrement',label:'有次序清單使用連續編號',check:true}]},
-    {title:'Markdown 語法擴充支援',fields:[{key:'autoLink',label:'自動鏈接連結',check:true},{key:'inlineMath',label:'行內數學式',check:true},{key:'subscript',label:'下標（H~2~O）',check:true},{key:'superscript',label:'上標（X^2^）',check:true},{key:'highlight',label:'醒目標示（==key==）',check:true},{key:'diagrams',label:'圖表（Mermaid）',check:true}]},
-    {title:'圖表選項',fields:[{key:'sequenceTheme',label:'序列圖主題',options:[['simple','Simple'],['hand','Hand drawn']]},{key:'mermaidTheme',label:'Mermaid 主題',options:[['auto','跟隨編輯器'],['default','Default'],['forest','Forest'],['dark','Dark'],['neutral','Neutral']]}]},
-    {title:'數學式',fields:[{key:'latexDelimiters',label:'LaTeX Math Delimiter：\\( \\) 與 \\[ \\]',check:true},{key:'codeMath',label:'程式碼區塊數學式（math）',check:true},{key:'mathLegacy',label:'使用舊版行內公式解析（相容模式）',check:true},{key:'mathLineBreaks',label:'在數學式中套用換行',check:true},{key:'mathPhysics',label:'啟用 physics 套件',check:true},{key:'mathNumbering',label:'自動編號數學式',options:[['none','不啟用自動編號'],['all','所有區塊數學式'],['ams','AMS 數學環境']]},{key:'mathExport',label:'匯出公式',options:[['svg','使用 SVG 渲染'],['mathml','使用 MathML']]}]},
-    { title:'智慧型標點符號',fields:[{key:'smartQuotes',label:'智慧型引號',check:true},{key:'smartDashes',label:'智慧型破折號',check:true}] },
-    { title: '原始碼模式', fields: [{ key: 'sourceNumbers', label: '顯示行號', check: true }, { key: 'sourceWrap', label: '自動折行', check: true }] },
-    { title: '縮排', fields: [{ key: 'tabSize', label: 'Tab 寬度', options: [['2','2'],['4','4'],['8','8']] }] },
-    { title: '程式碼區塊', fields:[{key:'defaultCodeLanguage',label:'程式碼區塊預設語言',text:true},{key:'codeNumbers',label:'顯示程式碼行號',check:true},{key:'codeWrap',label:'程式碼自動換行',check:true}] },
-  ],
-  '匯出': [
-    {title:'自訂匯出',action:'settings:templates',actionLabel:'管理各格式模板與參考文件…'},
-    {title:'頁面方向',fields:[{key:'pdfLandscape',label:'橫向',check:true}]},
-    { title: 'PDF', fields: [{ key: 'paperSize', label: '紙張大小', options: [['A3','A3'],['A4','A4'],['A5','A5'],['Letter','Letter'],['Legal','Legal'],['Tabloid','Tabloid']] }], action: 'export:pdf', actionLabel: '匯出 PDF…' },
-    {title:'PDF 排版',fields:[{key:'pdfMargin',label:'邊界（mm）',min:0,max:50},{key:'pdfScale',label:'縮放（%）',min:50,max:200},{key:'pdfHeader',label:'頁首',text:true},{key:'pdfFooter',label:'頁尾',text:true},{key:'pdfPageNumbers',label:'頁尾顯示頁碼',check:true}]},
-    { title: 'HTML', action: 'export:html', actionLabel: '匯出 HTML…' },
-    ...[['Word','docx'],['OpenOffice','odt'],['RTF','rtf'],['Epub','epub'],['LaTeX','tex'],['MediaWiki','wiki'],['reStructuredText','rst'],['Textile','textile'],['OPML','opml']].map(([title,format])=>({title,action:'convert:'+format,actionLabel:'匯出 '+title+'…'})),
+  '一般': [
+    {group:'啟動與語言', title: '啟動選項', fields: [{ key: 'startup', label: '啟動選項', options: [['restore','復原上次開啟的檔案'],['new','開啟新檔']] }] },
+    {group:'啟動與語言',title:'語言',fields:[{key:'uiLanguage',label:'介面語言',options:[['zh-TW','繁體中文'],['en','English']]}]},
+    {group:'快捷鍵與版本', title: '快捷鍵', action: 'settings:shortcuts', actionLabel: '自訂快捷鍵' },
+    {group:'快捷鍵與版本', title: '關於', description: 'wuffi · Windows Markdown 編輯器' },
   ],
   '外觀': [
-    {title:'語言',fields:[{key:'uiLanguage',label:'介面語言',options:[['zh-TW','繁體中文'],['en','English']]}]},
-    {title:'字型',fields:[{key:'fontFamily',label:'文章字型（留空使用主題預設）',text:true},{key:'codeFontFamily',label:'程式碼字型',text:true}]},
-    {title:'跟隨系統外觀',description:'隨系統自動在淺色與深色佈景主題之間切換',fields:[{key:'followSystem',label:'跟隨系統外觀',check:true}]},
-    { title: '字型大小', fields: [{ key: 'fontSize', label: '字型大小（px）', min: 12, max: 32 }] },
-    { title: '行距', fields: [{key:'lineHeight',label:'行距倍數（文章與原始碼）',min:1,max:3,step:0.1}] },
-    { title: '縮放', fields: [{ key: 'zoom', label: '縮放', options: [['0.75','75%'],['0.9','90%'],['1','100%'],['1.1','110%'],['1.25','125%'],['1.5','150%']] }] },
-    { title: '', fields:[{key:'wheelZoom',label:'按住 Ctrl 鍵並使用滑鼠滾輪進行縮放',check:true}] },
-    { title: '狀態欄', fields: [{ key: 'status', label: '顯示狀態欄', check: true }] },
-    { title: '字數統計', fields: [{ key: 'readingSpeed', label: '朗讀速度（字數／分）', min: 60, max: 1000 }] },
-    { title: '工具列', fields: [{ key: 'toolbar', label: '顯示編輯器工具列', check: true }] },
-    { title: '佈景主題', fields: [{ key: 'theme', label: '主題', options: [['light','Github'],['newsprint','Newsprint'],['night','Night'],['pixyll','Pixyll'],['whitey','Whitey'],['glass','Liquid Glass']] }],action:'settings:themes',actionLabel:'自訂主題與主題資料夾…' },
+    {group:'主題', title: '佈景主題', fields: [{ key: 'theme', label: '主題', options: [['light','Github'],['newsprint','Newsprint'],['night','Night'],['pixyll','Pixyll'],['whitey','Whitey'],['glass','Liquid Glass']] }],action:'settings:themes',actionLabel:'自訂主題與主題資料夾…' },
+    {group:'主題',title:'跟隨系統外觀',description:'隨系統自動在淺色與深色佈景主題之間切換',fields:[{key:'followSystem',label:'跟隨系統外觀',check:true}]},
+    {group:'工作區', title: '工具列', fields: [{ key: 'toolbar', label: '顯示編輯器工具列', check: true }] },
+    {group:'工作區', title: '狀態欄', fields: [{ key: 'status', label: '顯示狀態欄', check: true }] },
+    {group:'工作區', title:'大綱',fields:[{key:'outlineFold',label:'允許展開／折疊側邊欄大綱',check:true}] },
   ],
-  '一般': [
-    {title:'語言',fields:[{key:'uiLanguage',label:'介面語言',options:[['zh-TW','繁體中文'],['en','English']]}]},
-    { title: '快捷鍵', action: 'settings:shortcuts', actionLabel: '自訂快捷鍵' },
-    { title: '關於', description: 'wuffi · Windows Markdown 編輯器' },
+  '編輯器': [
+    {group:'文字與閱讀',title:'字型',fields:[{key:'fontFamily',label:'文章字型（留空使用主題預設）',text:true},{key:'codeFontFamily',label:'程式碼字型',text:true}]},
+    {group:'文字與閱讀', title: '字型大小', fields: [{ key: 'fontSize', label: '字型大小（px）', min: 12, max: 32 }] },
+    {group:'文字與閱讀', title: '行距', fields: [{key:'lineHeight',label:'行距倍數（文章與原始碼）',min:1,max:3,step:0.1}] },
+    {group:'文字與閱讀', title: '縮放', fields: [{ key: 'zoom', label: '縮放', options: [['0.75','75%'],['0.9','90%'],['1','100%'],['1.1','110%'],['1.25','125%'],['1.5','150%']] }] },
+    {group:'文字與閱讀', title: '', fields:[{key:'wheelZoom',label:'按住 Ctrl 鍵並使用滑鼠滾輪進行縮放',check:true}] },
+    {group:'文字與閱讀', title: '字數統計', fields: [{ key: 'readingSpeed', label: '朗讀速度（字數／分）', min: 60, max: 1000 }] },
+    {group:'輸入輔助', title:'自動配對',fields:[{key:'autoPair',label:'自動配對括號與引號',check:true},{key:'markdownPair',label:'自動配對常用 Markdown 符號',check:true}] },
+    {group:'輸入輔助', title:'智慧型標點符號',fields:[{key:'smartQuotes',label:'智慧型引號',check:true},{key:'smartDashes',label:'智慧型破折號',check:true}] },
+    {group:'輸入輔助', title: '拼字檢查', fields: [{ key: 'spellcheck', label: '啟用拼字檢查', check: true }] },
+    {group:'輸入輔助', title: '打字機模式', action: 'reset-focus', actionLabel: '關閉打字機／專注模式' },
+    {group:'原始碼與程式碼', title: '原始碼模式', fields: [{ key: 'sourceNumbers', label: '顯示行號', check: true }, { key: 'sourceWrap', label: '自動折行', check: true }] },
+    {group:'原始碼與程式碼', title:'儲存時調整縮排',fields:[{key:'tabSize',label:'縮排',options:[['2','2'],['4','4'],['8','8']]},{key:'formatOnSave',label:'整理縮排',check:true}] },
+    {group:'原始碼與程式碼', title: '程式碼區塊', fields:[{key:'defaultCodeLanguage',label:'程式碼區塊預設語言',text:true},{key:'codeNumbers',label:'顯示程式碼行號',check:true},{key:'codeWrap',label:'程式碼自動換行',check:true}] },
+  ],
+  '檔案': [
+    {group:'儲存與復原', title: '儲存並復原', fields: [{ key: 'autoSave', label: '自動儲存', check: true }, { key: 'saveOnSwitch', label: '在側邊欄切換檔案時自動儲存無需詢問', check: true }], action: 'drafts', actionLabel: '復原未儲存的草稿' },
+    {group:'儲存與復原', title: '最近位置',fields:[{key:'rememberRecent',label:'記錄最近使用的檔案與資料夾',check:true}], action: 'clearRecent', actionLabel: '清除最近使用的資料夾與檔案' },
+    {group:'儲存與復原', title: '預設檔案類型或副檔名', fields: [{ key: 'extension', label: '副檔名', options: [['md','Markdown (.md)'],['markdown','Markdown (.markdown)'],['txt','純文字 (.txt)']] }] },
+    {group:'儲存與復原', title: '預設換行符號', description: '儲存檔案時使用的換行符號', fields: [{ key: 'lineEnding', label: '換行符號', options: [['preserve','保留原檔'],['lf','LF (Unix Style)'],['crlf','CRLF (Windows Style)']] }] },
+    {group:'儲存與復原', title:'檔案樹狀目錄／檔案庫',fields:[{key:'showHidden',label:'顯示隱藏的檔案與資料夾',check:true}] },
+    {group:'圖片', title: '插入圖片時…', fields:[{key:'imageCopy',label:'將本機圖片複製到文件的 .assets 資料夾',check:true}], action: 'image:local', actionLabel: '插入本機圖片…' },
+    {group:'圖片', title: '圖片語法偏好設定', fields:[{key:'imageRelative',label:'優先使用相對路徑',check:true}] },
+    {group:'圖片', title: '圖片顯示', fields: [{ key: 'imageWidth', label: '最大寬度（文章寬度百分比）', min: 10, max: 100 }] },
+    {group:'圖片', title: '圖片上傳設定',action:'settings:upload',actionLabel:'設定上傳服務…' },
+  ],
+  'Markdown': [
+    {group:'語法與擴充',title:'Markdown 語法偏好設定',fields:[{key:'headingStyle',label:'標題樣式',options:[['atx','atx (#)'],['setext','setext (=== / ---)']]},{key:'bulletStyle',label:'無次序清單',options:[['-','-'],['*','*'],['+','+']]},{key:'orderedIncrement',label:'有次序清單使用連續編號',check:true}]},
+    {group:'語法與擴充',title:'Markdown 語法擴充支援',fields:[{key:'autoLink',label:'自動鏈接連結',check:true},{key:'inlineMath',label:'行內數學式',check:true},{key:'subscript',label:'下標（H~2~O）',check:true},{key:'superscript',label:'上標（X^2^）',check:true},{key:'highlight',label:'醒目標示（==key==）',check:true},{key:'diagrams',label:'圖表（Mermaid）',check:true}]},
+    {group:'圖表與公式',title:'圖表選項',fields:[{key:'sequenceTheme',label:'序列圖主題',options:[['simple','Simple'],['hand','Hand drawn']]},{key:'mermaidTheme',label:'Mermaid 主題',options:[['auto','跟隨編輯器'],['default','Default'],['forest','Forest'],['dark','Dark'],['neutral','Neutral']]}]},
+    {group:'圖表與公式',title:'數學式',fields:[{key:'latexDelimiters',label:'LaTeX Math Delimiter：\\( \\) 與 \\[ \\]',check:true},{key:'codeMath',label:'程式碼區塊數學式（math）',check:true},{key:'mathLegacy',label:'使用舊版行內公式解析（相容模式）',check:true},{key:'mathLineBreaks',label:'在數學式中套用換行',check:true},{key:'mathPhysics',label:'啟用 physics 套件',check:true},{key:'mathNumbering',label:'自動編號數學式',options:[['none','不啟用自動編號'],['all','所有區塊數學式'],['ams','AMS 數學環境']]},{key:'mathExport',label:'匯出公式',options:[['svg','使用 SVG 渲染'],['mathml','使用 MathML']]}]},
+  ],
+  '匯出': [
+    {group:'PDF 排版', title: 'PDF', fields: [{ key: 'paperSize', label: '紙張大小', options: [['A3','A3'],['A4','A4'],['A5','A5'],['Letter','Letter'],['Legal','Legal'],['Tabloid','Tabloid']] }], action: 'export:pdf', actionLabel: '匯出 PDF…' },
+    {group:'PDF 排版',title:'頁面方向',fields:[{key:'pdfLandscape',label:'橫向',check:true}]},
+    {group:'PDF 排版',title:'PDF 排版',fields:[{key:'pdfMargin',label:'邊界（mm）',min:0,max:50},{key:'pdfScale',label:'縮放（%）',min:50,max:200},{key:'pdfHeader',label:'頁首',text:true},{key:'pdfFooter',label:'頁尾',text:true},{key:'pdfPageNumbers',label:'頁尾顯示頁碼',check:true}]},
+    {group:'其他格式', title: 'HTML', action: 'export:html', actionLabel: '匯出 HTML…' },
+    ...[['Word','docx'],['OpenOffice','odt'],['RTF','rtf'],['Epub','epub'],['LaTeX','tex'],['MediaWiki','wiki'],['reStructuredText','rst'],['Textile','textile'],['OPML','opml']].map(([title,format])=>({title,action:'convert:'+format,actionLabel:'匯出 '+title+'…'})),
+    {group:'匯出模板',title:'自訂匯出',action:'settings:templates',actionLabel:'管理各格式模板與參考文件…'},
   ],
 }
 export function preferenceCapabilities(){
@@ -139,10 +135,12 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
   function render() {
     preview()
     nav.replaceChildren(); panel.replaceChildren()
-    const query = search.value.trim().toLowerCase()
-    const categoryIcons:Record<string,typeof Palette>={'外觀':Palette,'編輯器':Type,'檔案':FolderOpen,'圖片':Image,'Markdown':FileCode,'匯出':Upload,'一般':Settings,'AI':Sparkles}
-    for (const name of ['外觀','編輯器','檔案','圖片','Markdown','匯出','AI','一般']) {
-      const button = document.createElement('button'); const caption=document.createElement('span');caption.textContent=name
+    const query = search.value.trim().toLowerCase().replace(/字體/g,'字型').replace(/自動存檔/g,'自動儲存').replace(/行高/g,'行距')
+    const categoryIcons:Record<string,typeof Palette>={'外觀':Palette,'編輯器':Type,'檔案':FolderOpen,'Markdown':FileCode,'匯出':Upload,'一般':Settings,'AI':Sparkles}
+    const categoryNames:Record<string,string>={'檔案':'檔案與圖片','AI':'AI 與帳號'}
+    const descriptions:Record<string,string>={'一般':'啟動方式、介面語言與快捷鍵。','外觀':'主題與工作區顯示；文章字型請到「編輯器」。','編輯器':'字型、閱讀間距、輸入輔助與原始碼設定。','檔案':'自動儲存、草稿復原，以及圖片的儲存方式。','Markdown':'調整 Markdown 語法、圖表與數學公式。','匯出':'PDF 紙張與版面、其他格式及匯出模板。','AI':'選擇本機模型，或管理 wuffi 雲端登入與會員。'}
+    for (const name of ['一般','外觀','編輯器','檔案','Markdown','匯出','AI']) {
+      const button = document.createElement('button'); const caption=document.createElement('span');caption.textContent=categoryNames[name]||name
       const icon=createElement(categoryIcons[name]);icon.setAttribute('aria-hidden','true');button.append(icon,caption)
       button.dataset.page = name
       button.className = selected === name && !query ? 'selected' : ''
@@ -150,18 +148,21 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
       button.onclick = () => { selected = name; search.value = ''; root.scrollTop=0;render();nav.querySelector<HTMLButtonElement>('.selected')?.focus() }
       nav.append(button)
     }
-    const heading = document.createElement('h1'); heading.textContent = query ? '搜尋結果' : selected; panel.append(heading)
-    const ai=(!query&&selected==='AI')||!!query&&/ai|模型|人工智慧|會員|登入|model|cloud|ollama/i.test(query)
+    const heading = document.createElement('h1'); heading.textContent = query ? '搜尋結果' : categoryNames[selected]||selected; panel.append(heading)
+    if(!query){const intro=document.createElement('p');intro.className='preferences-intro';intro.textContent=descriptions[selected];panel.append(intro)}
+    const ai=(!query&&selected==='AI')||!!query&&/ai|模型|人工智慧|會員|登入|帳號|雲端|本機|連線|model|cloud|ollama|account|local|lm studio/i.test(query)
     root.querySelector<HTMLElement>('.preferences-preview')!.hidden=ai||selected!=='編輯器'||!!query
     if(ai){mountAISettings(panel);if(!query)return}
     for (const [name, rows] of Object.entries(pages)) {
       if (!query && name !== selected) continue
-      const orderedRows=name==='外觀'?[...rows].sort((a,b)=>{const rank=(r:typeof a)=>r.fields?.some(f=>f.key==='theme')?0:r.fields?.some(f=>f.key==='followSystem')?1:2;return rank(a)-rank(b)}):rows
-      for (const row of orderedRows) {
-        if (query && !JSON.stringify(row).toLowerCase().includes(query) && !name.toLowerCase().includes(query) && !translate(name).toLowerCase().includes(query) && !JSON.stringify(row,(_key,value)=>typeof value==='string'?translate(value):value).toLowerCase().includes(query)) continue
+      let previousGroup=''
+      for (const row of rows) {
+        if (query && !JSON.stringify(row).toLowerCase().includes(query) && !(categoryNames[name]||name).toLowerCase().includes(query) && !translate(categoryNames[name]||name).toLowerCase().includes(query) && !JSON.stringify(row,(_key,value)=>typeof value==='string'?translate(value):value).toLowerCase().includes(query)) continue
+        const group=query?`${categoryNames[name]||name} · ${row.group||'其他格式'}`:row.group||'其他格式'
+        if(group!==previousGroup){const subheading=document.createElement('h2');subheading.className='preferences-group';subheading.textContent=group;panel.append(subheading);previousGroup=group}
         const section = document.createElement('section'); section.className = 'preference-row'
-        if(row.fields?.length===1&&row.fields[0].check&&row.title)section.classList.add('toggle-row')
-        const label = document.createElement('div'); const title = document.createElement('h2'); title.textContent = row.title; label.append(title)
+        if(row.fields?.length===1&&row.fields[0].check&&row.title&&!row.action)section.classList.add('toggle-row')
+        const label = document.createElement('div'); const title = document.createElement('h2'); title.textContent = section.classList.contains('toggle-row')?row.fields![0].label:row.title; label.append(title)
         if (row.description) { const detail = document.createElement('p'); detail.textContent = row.description; label.append(detail) }
         const controls = document.createElement('div'); controls.className = 'preference-controls'
         for (const field of row.fields || []) {
@@ -185,6 +186,7 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
           if(control instanceof HTMLInputElement&&!field.check)control.addEventListener('input',()=>{if(control.type==='number'&&(control.value===''||!control.validity.valid))return;control.onchange?.call(control,new Event('change'))})
           wrap.append(control)
           if (field.check) {const text=document.createElement('span');text.textContent=field.label;wrap.append(text)}
+          else if ((row.fields?.length||0)>1) { const caption = document.createElement('span');caption.className='preference-field-label';caption.textContent = field.label; wrap.prepend(caption) }
           else if (!field.options) { const suffix = document.createElement('span'); suffix.textContent = field.label; wrap.append(suffix) }
           controls.append(wrap)
         }
@@ -205,6 +207,7 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
         section.append(label, controls); panel.append(section)
       }
     }
+    if(query&&!panel.querySelector('.preference-row,.agent-connection')){const empty=document.createElement('p');empty.className='preferences-intro';empty.textContent='找不到符合的設定，試試「字型」、「自動儲存」或「模型」。';panel.append(empty)}
   }
   search.oninput = render
   document.addEventListener('wuffi:open-ai-settings',()=>{if(root.hidden)previousFocus=document.activeElement as HTMLElement;selected='AI';root.hidden=false;search.value='';render();nav.querySelector<HTMLButtonElement>('.selected')?.focus()})

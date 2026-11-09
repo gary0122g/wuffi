@@ -20,7 +20,10 @@ body #preferences .preferences-tabs button:hover { background:var(--hover); colo
 body #preferences .preferences-tabs button.selected { background:var(--pref-selected); color:var(--ink); }
 body #preferences .preferences-content { padding:26px 0 32px; min-width:0; max-width:920px; }
 body[data-theme] #preferences .preferences-content h1 { margin:0 0 28px; font:600 18px/1.5 'Segoe UI','Microsoft JhengHei',sans-serif; color:var(--ink); }
-body #preferences .preferences-content:has(.theme-row)>h1 { display:none; }
+body #preferences .preferences-intro { margin:-18px 0 30px; color:var(--muted); font-size:13px; }
+body #preferences .preferences-group { margin:32px 0 22px; padding-bottom:10px; border-bottom:1px solid var(--line); font-size:13px; font-weight:600; color:var(--muted); }
+body #preferences .preference-field-label { flex-basis:100%; color:var(--muted); }
+body #preferences .preference-controls label:has(.preference-field-label) { gap:5px; }
 body #preferences .preference-row { display:grid; grid-template-columns:minmax(160px,1fr) minmax(160px,1fr); gap:20px; align-items:start; padding:0; margin:0 0 32px; border:0; border-radius:0; background:transparent; }
 body #preferences .preference-row h2 { margin:0; font:500 15px/1.6 'Segoe UI','Microsoft JhengHei',sans-serif; color:var(--ink); }
 body #preferences .preference-row p { margin:3px 0 0; color:var(--muted); font-size:13px; }
