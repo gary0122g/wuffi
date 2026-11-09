@@ -42,6 +42,14 @@ test('line endings follow the document, so untouched blocks stay identical',()=>
  assert.equal(resolveEdit({kind:'replace',scope:'document',markdown:'a\r\nb'},snapshot,'document').markdown,'a\nb')
 })
 
+test('a passage matches a document that mixes \\r\\n and \\n',()=>{
+ // Seen in a real note: lines end in \r\n except the one before a closing fence.
+ const mixed={...snapshot,markdown:'Intro\r\n\r\n```mermaid\r\ntimeline\r\n  2020 : ViT\n```\r\n\r\nEnd ($5).\r\n'}
+ assert.equal(resolveEdit({kind:'edit',find:'```mermaid\r\ntimeline\r\n  2020 : ViT\r\n```',markdown:'```mermaid\nflowchart TD\n```'},mixed,'document').markdown,'Intro\r\n\r\n```mermaid\r\nflowchart TD\r\n```\r\n\r\nEnd ($5).\r\n')
+ // Regex characters in the passage are matched literally.
+ assert.equal(resolveEdit({kind:'edit',find:'End ($5).',markdown:'Fin.'},mixed,'document').markdown.endsWith('Fin.\r\n'),true)
+})
+
 test('replies may carry one edit, which counts like a replace',()=>{
  const api=createWritingAPI({commands:[],snapshot:()=>snapshot,unchanged:()=>true})
  assert.equal(api.validate({message:'ok',actions:[{kind:'edit',find:'After',markdown:'Before'}]}).actions.length,1)

@@ -13,11 +13,13 @@ export function resolveEdit(action:WritingAction,snapshot:WritingSnapshot,scope:
   const eol=snapshot.markdown.includes('\r\n')?'\r\n':'\n',lines=(text:string)=>text.replace(/\r\n/g,'\n').replace(/\n/g,eol)
   if(action.kind==='replace')return {...action,markdown:lines(action.markdown)}
   if(action.kind!=='edit')return action
-  const base=scope==='selection'?snapshot.selection.markdown:snapshot.markdown,find=lines(action.find)
-  const at=base.indexOf(find)
-  if(!find.trim()||at<0)throw Error('AI 找不到要修改的段落，原文沒有變更。請換個說法，或先選取那一段再試。')
-  if(base.indexOf(find,at+1)>=0)throw Error('要修改的段落在文章中出現不只一次，原文沒有變更。請先選取那一段再試。')
-  return {kind:'replace',scope,markdown:base.slice(0,at)+lines(action.markdown)+base.slice(at+find.length)}
+  // Documents can mix \r\n and \n, so any line ending matches any other.
+  const base=scope==='selection'?snapshot.selection.markdown:snapshot.markdown,find=action.find.replace(/\r\n?/g,'\n')
+  const pattern=new RegExp(find.split('\n').map(line=>line.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('\\r?\\n'),'g'),found=[...base.matchAll(pattern)]
+  if(!find.trim()||!found.length)throw Error('AI 找不到要修改的段落，原文沒有變更。請換個說法，或先選取那一段再試。')
+  if(found.length>1)throw Error('要修改的段落在文章中出現不只一次，原文沒有變更。請先選取那一段再試。')
+  const at=found[0].index,length=found[0][0].length
+  return {kind:'replace',scope,markdown:base.slice(0,at)+lines(action.markdown)+base.slice(at+length)}
 }
 export type WritingReply={message:string;actions:WritingAction[]}
 export type WritingHost={snapshot():WritingSnapshot;unchanged(snapshot:WritingSnapshot):boolean;replace(snapshot:WritingSnapshot,scope:'selection'|'document',markdown:string):void;review(snapshot:WritingSnapshot,scope:'selection'|'document',markdown:string,options:ReviewOptions):number;preferences():Preferences;configure(value:Preferences):void;command(name:string):Promise<void>;commands:{name:string;label:string}[]}
