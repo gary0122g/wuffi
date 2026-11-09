@@ -38,6 +38,7 @@
     "@milkdown/kit": "7.22.3",
     "dompurify": "^3.2.6",
     "flowchart.js": "1.18.0",
+    "lucide": "0.468.0",
     "marked": "^16.4.0",
     "mathjax-full": "3.2.2",
     "mermaid": "^12.2.0",

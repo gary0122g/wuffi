@@ -1,0 +1,68 @@
+/* Reference layout; colors follow wuffi's active document theme. */
+body[data-theme] #preferences {
+  --pref-accent:#467dab; --pref-selected:color-mix(in srgb,var(--ink) 8%,var(--paper));
+  --pref-knob:var(--paper); --pref-track:color-mix(in srgb,var(--ink) 24%,var(--paper));
+  background:var(--paper); color:var(--ink);
+  padding:0; font:14px/1.6 'Segoe UI','Microsoft JhengHei',sans-serif;
+}
+body #preferences .preferences-header { position:fixed; top:36px; right:12px; left:auto; height:32px; padding:0; border:0; background:transparent; z-index:3; }
+body #preferences .preferences-header>span { display:none; }
+body #preferences .preferences-header button { height:30px; width:30px; border:0; border-radius:5px; color:var(--muted); background:transparent; font-size:24px; }
+body #preferences .preferences-header button:hover { background:var(--hover); color:var(--ink); }
+body #preferences .preferences-layout { display:grid; grid-template-columns:250px minmax(0,1fr); grid-template-areas:'nav content' 'nav preview'; gap:0 40px; max-width:none; margin:0; padding:0 26px 32px 0; min-height:100%; align-content:start; }
+body #preferences .preferences-layout>nav { grid-area:nav; position:sticky; top:0; height:calc(100vh - 32px); background:var(--side); border-radius:0 18px 18px 0; padding:6px; overflow:auto; scrollbar-width:thin; }
+body #preferences .preferences-layout nav input { height:32px; padding:0 0 8px; margin:0 0 10px; border:0; border-bottom:1px solid var(--line); border-radius:0; background:transparent; color:var(--ink); font-size:13px; }
+body #preferences .preferences-layout nav input::placeholder { color:var(--muted); }
+body #preferences .preferences-tabs { display:flex; flex-direction:column; gap:5px; }
+body #preferences .preferences-tabs button { display:flex; align-items:center; gap:12px; width:100%; min-height:34px; height:auto; padding:5px 10px; border:0; border-radius:5px; background:transparent; color:var(--muted); font-size:15px; font-weight:400; text-align:left; }
+body #preferences .preferences-tabs button svg { width:20px; height:20px; flex:none; stroke-width:1.7; }
+body #preferences .preferences-tabs button:hover { background:var(--hover); color:var(--ink); }
+body #preferences .preferences-tabs button.selected { background:var(--pref-selected); color:var(--ink); }
+body #preferences .preferences-content { padding:26px 0 32px; min-width:0; max-width:920px; }
+body[data-theme] #preferences .preferences-content h1 { margin:0 0 28px; font:600 18px/1.5 'Segoe UI','Microsoft JhengHei',sans-serif; color:var(--ink); }
+body #preferences .preferences-content:has(.theme-row)>h1 { display:none; }
+body #preferences .preference-row { display:grid; grid-template-columns:minmax(160px,1fr) minmax(160px,1fr); gap:20px; align-items:start; padding:0; margin:0 0 32px; border:0; border-radius:0; background:transparent; }
+body #preferences .preference-row h2 { margin:0; font:500 15px/1.6 'Segoe UI','Microsoft JhengHei',sans-serif; color:var(--ink); }
+body #preferences .preference-row p { margin:3px 0 0; color:var(--muted); font-size:13px; }
+body #preferences .preference-controls { padding:0; min-width:0; display:flex; flex-direction:column; align-items:stretch; gap:12px; color:var(--ink); }
+body #preferences .preference-controls label { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:13px; margin:0; }
+body #preferences :is(input,select,textarea,button) { font-family:inherit; }
+body #preferences .preference-controls :is(input:not([type=checkbox]),select,button),body #preferences .agent-connection :is(input,select,button) { min-height:32px; padding:5px 8px; max-width:100%; border:1px solid var(--line); border-radius:4px; background:var(--paper); color:var(--ink); box-shadow:none; }
+body #preferences .preference-controls input[type=text] { width:100%; }
+body #preferences .preference-controls input[type=number] { width:80px; }
+body #preferences input[type=checkbox] { appearance:none; width:44px; height:25px; flex:0 0 44px; border:0; border-radius:20px; padding:3px; margin:0; background:var(--pref-track); cursor:pointer; transition:background-color .12s; }
+body #preferences input[type=checkbox]::before { content:''; display:block; width:19px; height:19px; border-radius:50%; background:var(--pref-knob); transition:transform .12s; }
+body #preferences input[type=checkbox]:checked { background:var(--pref-accent); }
+body #preferences input[type=checkbox]:checked::before { transform:translateX(19px); background:white; }
+body #preferences .toggle-row { grid-template-columns:minmax(0,1fr) 44px; align-items:center; }
+body #preferences .toggle-row .preference-controls label>span { display:none; }
+body #preferences .theme-row { display:block; margin-bottom:30px; }
+body #preferences .theme-row h2 { font-size:17px; font-weight:650; margin-bottom:14px; }
+body #preferences .theme-choices { display:flex; gap:20px; }
+body #preferences .preference-controls .theme-choices button { display:flex; flex-direction:column; align-items:center; gap:5px; border:0; background:transparent; padding:0; color:var(--muted); font-size:13px; }
+body #preferences .theme-sample { display:flex; align-items:flex-start; justify-content:center; width:70px; height:60px; padding:6px 8px; border:1px solid #414751; border-radius:10px; background:#24272b; color:#dce9fc; font-size:16px; box-shadow:0 4px 10px #0002; position:relative; }
+body #preferences [data-theme-choice=light] .theme-sample { background:#fff; color:#19212a; border-color:#e9edf2; }
+body #preferences .theme-sample::after { content:''; position:absolute; bottom:8px; left:8px; right:8px; height:2px; background:#65b5ff; }
+body #preferences [data-theme-choice][aria-pressed=true] .theme-sample { outline:2px solid #78b9f3; outline-offset:3px; }
+body #preferences .theme-row details { margin-top:10px; font-size:12px; color:var(--muted); }
+body #preferences .theme-row summary { cursor:pointer; width:fit-content; }
+body #preferences .theme-row details[open] { display:flex; flex-direction:column; gap:10px; }
+body #preferences .theme-row details>label { margin:12px 0; }
+body #preferences .preferences-preview { position:static; grid-area:preview; background:var(--side); border:1px solid var(--line); border-radius:4px; padding:20px; max-height:none; max-width:920px; }
+body #preferences .agent-connection { padding:0; margin:0; border:0; border-radius:0; background:transparent; color:var(--ink); }
+body #preferences .cloud-account { background:transparent; border:0; border-bottom:1px solid var(--line); border-radius:0; padding:0 0 24px; margin-bottom:24px; }
+body #preferences .agent-connection :is(input,select) { background:var(--side); }
+body #preferences .agent-connection button { cursor:pointer; padding:6px 14px; margin-right:8px; }
+body #preferences .agent-connection button[type=submit] { background:var(--pref-accent); border-color:var(--pref-accent); color:white; }
+body #preferences :is(button,input,select,summary):focus-visible { outline:2px solid #78b9f3; outline-offset:2px; }
+@media(max-width:760px) {
+ body #preferences .preferences-layout { grid-template-columns:180px minmax(0,1fr); gap:0 24px; padding-right:20px; }
+ body #preferences .preference-row:not(.toggle-row):not(.theme-row) { grid-template-columns:1fr; gap:12px; }
+}
+@media(max-width:500px) {
+ body #preferences .preferences-layout { grid-template-columns:140px minmax(0,1fr); gap:0 16px; padding-right:16px; }
+ body #preferences .preferences-tabs button { font-size:13px; gap:8px; padding:6px; }
+ body #preferences .theme-choices { gap:12px; }
+ body #preferences .theme-sample { width:58px; }
+}
+@media(prefers-reduced-motion:reduce) { body #preferences input[type=checkbox],body #preferences input[type=checkbox]::before { transition:none; } }

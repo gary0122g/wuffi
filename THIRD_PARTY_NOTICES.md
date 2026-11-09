@@ -13,6 +13,8 @@ The Windows x64 desktop application invokes the unmodified Pandoc 3.12.1 executa
 
 ## Desktop and editor libraries
 
+Preferences navigation uses Lucide 0.468.0 icons under the ISC License. Project: https://lucide.dev ; license: https://github.com/lucide-icons/lucide/blob/0.468.0/LICENSE .
+
 The Tauri Windows app uses Tauri, Wry, WebView2 bindings and the Rust libraries recorded in `src-tauri/Cargo.lock`. It uses the system WebView2 runtime. It does not bundle Chromium or Node.js.
 
 Milkdown, ProseMirror, CodeMirror, Mermaid, KaTeX, marked, DOMPurify and their dependencies retain their respective licenses. Exact JavaScript versions are recorded in `package-lock.json`.

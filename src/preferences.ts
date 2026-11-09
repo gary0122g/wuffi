@@ -1,5 +1,6 @@
 import {translate,currentLanguage} from './i18n'
 import {mountAISettings} from './ai-settings'
+import {createElement, Palette, Type, FolderOpen, Image, FileCode, Upload, Settings, Sparkles} from 'lucide'
 export type Preferences = {
   uiLanguage:'zh-TW'|'en'; startup: string; autoSave: boolean; saveOnSwitch: boolean; extension: string;
   fontSize: number; lineHeight: number; zoom: number; status: boolean; toolbar: boolean; theme: string;
@@ -80,7 +81,7 @@ const pages: Record<string, Row[]> = {
   '外觀': [
     {title:'語言',fields:[{key:'uiLanguage',label:'介面語言',options:[['zh-TW','繁體中文'],['en','English']]}]},
     {title:'字型',fields:[{key:'fontFamily',label:'文章字型（留空使用主題預設）',text:true},{key:'codeFontFamily',label:'程式碼字型',text:true}]},
-    {title:'深色模式',fields:[{key:'followSystem',label:'依系統外觀自動切換 Night 主題',check:true}]},
+    {title:'跟隨系統外觀',description:'隨系統自動在淺色與深色佈景主題之間切換',fields:[{key:'followSystem',label:'跟隨系統外觀',check:true}]},
     { title: '字型大小', fields: [{ key: 'fontSize', label: '字型大小（px）', min: 12, max: 32 }] },
     { title: '行距', fields: [{key:'lineHeight',label:'行距倍數（文章與原始碼）',min:1,max:3,step:0.1}] },
     { title: '縮放', fields: [{ key: 'zoom', label: '縮放', options: [['0.75','75%'],['0.9','90%'],['1','100%'],['1.1','110%'],['1.25','125%'],['1.5','150%']] }] },
@@ -118,7 +119,7 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
   root.id = 'preferences'; root.hidden = true; root.setAttribute('aria-label', '偏好設定')
   root.innerHTML = '<header class="preferences-header"><span>偏好設定</span><button aria-label="關閉偏好設定">×</button></header><div class="preferences-layout"><nav><input type="search" placeholder="搜尋…" aria-label="搜尋偏好設定"><div class="preferences-tabs"></div></nav><main class="preferences-content"></main><aside class="preferences-preview" aria-label="即時預覽"><h2>即時預覽</h2><div class="preview-paper"><h3>寫作，從這一行開始</h3><p>調整字型與行距，找到舒服的閱讀節奏。<br>Write clearly. Make room for your ideas.</p><pre><code>const message = "Hello 世界";\nconsole.log(message);</code></pre></div><small>設定立即套用，範例不會修改文件。</small></aside></div>'
   document.body.append(root)
-  let selected = '檔案'
+  let selected = '外觀'
   let previousFocus:HTMLElement|null=null
   const search = root.querySelector('input')!
   const panel = root.querySelector('main')!
@@ -132,14 +133,17 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
       if(control instanceof HTMLInputElement&&control.type==='checkbox')control.checked=Boolean(value[key])
       else if(control.value!==String(value[key]))control.value=String(value[key])
     }
+    for(const card of root.querySelectorAll<HTMLButtonElement>('[data-theme-choice]'))card.setAttribute('aria-pressed',String(card.dataset.themeChoice===value.theme))
     preview()
   }
   function render() {
     preview()
     nav.replaceChildren(); panel.replaceChildren()
     const query = search.value.trim().toLowerCase()
-    for (const name of [...Object.keys(pages),'AI']) {
-      const button = document.createElement('button'); button.textContent = name
+    const categoryIcons:Record<string,typeof Palette>={'外觀':Palette,'編輯器':Type,'檔案':FolderOpen,'圖片':Image,'Markdown':FileCode,'匯出':Upload,'一般':Settings,'AI':Sparkles}
+    for (const name of ['外觀','編輯器','檔案','圖片','Markdown','匯出','AI','一般']) {
+      const button = document.createElement('button'); const caption=document.createElement('span');caption.textContent=name
+      const icon=createElement(categoryIcons[name]);icon.setAttribute('aria-hidden','true');button.append(icon,caption)
       button.dataset.page = name
       button.className = selected === name && !query ? 'selected' : ''
       button.setAttribute('aria-current',selected===name&&!query?'page':'false')
@@ -148,13 +152,15 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
     }
     const heading = document.createElement('h1'); heading.textContent = query ? '搜尋結果' : selected; panel.append(heading)
     const ai=(!query&&selected==='AI')||!!query&&/ai|模型|人工智慧|會員|登入|model|cloud|ollama/i.test(query)
-    root.querySelector<HTMLElement>('.preferences-preview')!.hidden=ai
+    root.querySelector<HTMLElement>('.preferences-preview')!.hidden=ai||selected!=='編輯器'||!!query
     if(ai){mountAISettings(panel);if(!query)return}
     for (const [name, rows] of Object.entries(pages)) {
       if (!query && name !== selected) continue
-      for (const row of rows) {
+      const orderedRows=name==='外觀'?[...rows].sort((a,b)=>{const rank=(r:typeof a)=>r.fields?.some(f=>f.key==='theme')?0:r.fields?.some(f=>f.key==='followSystem')?1:2;return rank(a)-rank(b)}):rows
+      for (const row of orderedRows) {
         if (query && !JSON.stringify(row).toLowerCase().includes(query) && !name.toLowerCase().includes(query) && !translate(name).toLowerCase().includes(query) && !JSON.stringify(row,(_key,value)=>typeof value==='string'?translate(value):value).toLowerCase().includes(query)) continue
         const section = document.createElement('section'); section.className = 'preference-row'
+        if(row.fields?.length===1&&row.fields[0].check&&row.title)section.classList.add('toggle-row')
         const label = document.createElement('div'); const title = document.createElement('h2'); title.textContent = row.title; label.append(title)
         if (row.description) { const detail = document.createElement('p'); detail.textContent = row.description; label.append(detail) }
         const controls = document.createElement('div'); controls.className = 'preference-controls'
@@ -165,7 +171,7 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
           if (control instanceof HTMLSelectElement) {
             for (const [value, text] of field.options!) { const option = document.createElement('option'); option.value = value; option.textContent = text; control.append(option) }
             control.value = String(get()[field.key])
-          } else if (field.check) { control.type = 'checkbox'; control.checked = Boolean(get()[field.key]) }
+          } else if (field.check) { control.type = 'checkbox';control.setAttribute('role','switch'); control.checked = Boolean(get()[field.key]) }
           else { control.type = field.text?'text':'number'; if(field.step!==undefined)control.step=String(field.step);if(field.min!==undefined)control.min=String(field.min);if(field.max!==undefined)control.max=String(field.max); control.value = String(get()[field.key]) }
           control.onchange = () => {
             let value: string | boolean | number = control.value
@@ -178,11 +184,24 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
           }
           if(control instanceof HTMLInputElement&&!field.check)control.addEventListener('input',()=>{if(control.type==='number'&&(control.value===''||!control.validity.valid))return;control.onchange?.call(control,new Event('change'))})
           wrap.append(control)
-          if (field.check) wrap.append(document.createTextNode(field.label))
+          if (field.check) {const text=document.createElement('span');text.textContent=field.label;wrap.append(text)}
           else if (!field.options) { const suffix = document.createElement('span'); suffix.textContent = field.label; wrap.append(suffix) }
           controls.append(wrap)
         }
         if (row.action) { const button = document.createElement('button'); button.textContent = row.actionLabel!; button.onclick = () => { close(); action(row.action!) }; controls.append(button) }
+        if(row.fields?.some(field=>field.key==='theme')){
+          section.classList.add('theme-row')
+          const more=document.createElement('details'),summary=document.createElement('summary');summary.textContent=currentLanguage()==='en'?'More themes':'更多主題';more.append(summary)
+          while(controls.firstChild)more.append(controls.firstChild)
+          const choices=document.createElement('div');choices.className='theme-choices'
+          for(const [value,zh,en]of [['light','白色','Light'],['night','夜間','Dark']]){
+            const choice=document.createElement('button');choice.type='button';choice.dataset.themeChoice=value;choice.setAttribute('aria-pressed',String(get().theme===value))
+            const sample=document.createElement('span');sample.className='theme-sample';sample.textContent='Aa';sample.setAttribute('aria-hidden','true')
+            const caption=document.createElement('span');caption.textContent=currentLanguage()==='en'?en:zh;choice.append(sample,caption)
+            choice.onclick=()=>{change({...get(),theme:value,followSystem:false});sync()};choices.append(choice)
+          }
+          controls.append(choices,more)
+        }
         section.append(label, controls); panel.append(section)
       }
     }
@@ -194,7 +213,7 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
     if(event.isComposing)return
     if (event.key === 'Escape') { event.stopPropagation(); close() }
     if(event.key==='Tab'){
-      const controls=Array.from(root.querySelectorAll<HTMLElement>('button,input,select')).filter(el=>!el.hasAttribute('disabled'))
+      const controls=Array.from(root.querySelectorAll<HTMLElement>('button,input,select,textarea,summary')).filter(el=>!el.hasAttribute('disabled')&&el.getClientRects().length>0)
       const first=controls[0],last=controls.at(-1)
       if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus()}
       else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}

@@ -11,6 +11,7 @@ src-tauri/gen/
 .env.*
 !.env.example
 *.log
+/design-qa.md
 .vscode/
 .idea/
 vendor/pandoc/
