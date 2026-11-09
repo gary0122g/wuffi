@@ -18,7 +18,7 @@
     "tauri:build": "node scripts/build-tauri.mjs",
     "tauri:start": "node scripts/start-tauri.mjs",
     "release": "tauri build --bundles nsis",
-    "test": "node --test tests/cloud-account-ui.mjs tests/tauri-source.mjs && node tests/block-matches.mjs && node tests/search-replacement.mjs && node tests/metrics.mjs",
+    "test": "node --test tests/cloud-account-ui.mjs tests/tauri-source.mjs tests/writing-edit.mjs && node tests/block-matches.mjs && node tests/search-replacement.mjs && node tests/metrics.mjs",
     "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml --locked --bin wuffi"
   },
   "dependencies": {
