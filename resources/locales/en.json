@@ -657,5 +657,8 @@
   "調整 Markdown 語法、圖表與數學公式。": "Configure Markdown syntax, diagrams and math.",
   "PDF 紙張與版面、其他格式及匯出模板。": "PDF paper and layout, other formats and export templates.",
   "選擇本機模型，或管理 wuffi 雲端登入與會員。": "Choose a local model or manage your wuffi Cloud account and membership.",
-  "找不到符合的設定，試試「字型」、「自動儲存」或「模型」。": "No matching settings. Try font, autosave or model."
+  "找不到符合的設定，試試「字型」、「自動儲存」或「模型」。": "No matching settings. Try font, autosave or model.",
+  "明亮白": "Bright",
+  "紙感米": "Paper",
+  "深夜灰": "Midnight"
 }

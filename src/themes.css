@@ -1,7 +1,5 @@
 /* Built-in themes change colors only. Document geometry lives in styles.css. */
 body[data-theme=newsprint] { --paper:#f3f2ee; --side:#f3f2ee; --ink:#1f0909; }
-body[data-theme=pixyll] { --paper:#fff; --ink:#333; }
-body[data-theme=whitey] { --paper:#fefefe; --ink:#333; }
 body[data-theme=night] { --paper:#363b40; --side:#2e3033; --ink:#b8bfc6; --line:#555; --hover:#444a50; --muted:#999; }
 body[data-theme=night] #milkdown-root .milkdown .ProseMirror :is(h1,h2,h3,h4,h5,h6) { border-color:#555; color:#dedede; }
 body[data-theme=night] #milkdown-root .milkdown .ProseMirror :is(strong,th) { color:#dedede; }
@@ -13,7 +11,6 @@ body[data-theme=night] #milkdown-root .milkdown .ProseMirror :is(th,table tr:nth
 body[data-theme=newsprint] #milkdown-root .milkdown .ProseMirror :is(table tr:first-child,th) { background:#dadada; }
 body[data-theme=newsprint] #milkdown-root .milkdown .ProseMirror table tr:nth-child(even) { background:#e8e7e7; }
 body[data-theme=newsprint] #milkdown-root .milkdown .ProseMirror table tr:nth-child(odd):not(:first-child) { background:transparent; }
-body:is([data-theme=pixyll],[data-theme=whitey]) #milkdown-root .milkdown .ProseMirror :is(table tr,th) { background:transparent; }
 body[data-theme=night] .statusbar { background:#42474d; border-top-color:#555; }
 body[data-theme=night] .statusbar :is(button,.word-count) { color:#aaa; }
 

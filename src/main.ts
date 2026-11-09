@@ -951,6 +951,7 @@ function applyFormat(format: string): void {
 
 
 function changePreferences(value: Preferences): void {
+  if(value.theme==='pixyll'||value.theme==='whitey')value={...value,theme:'light'}
   const syntaxChanged=['sequenceTheme','mermaidTheme','mathLegacy','mathLineBreaks','mathPhysics','mathNumbering','mathExport','latexDelimiters','codeMath','headingStyle','bulletStyle','orderedIncrement','autoLink','inlineMath','subscript','superscript','highlight','diagrams'].some(key=>value[key as keyof Preferences]!==preferences[key as keyof Preferences])
   if(syntaxChanged){flushVisual();syntaxRevision++}
   const hiddenChanged=value.showHidden!==preferences.showHidden

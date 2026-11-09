@@ -10,13 +10,17 @@ body[data-theme=glass] #app,
 body[data-theme=glass] .workspace,
 body[data-theme=glass] #milkdown-root .milkdown { background:transparent; }
 body[data-theme=glass] #milkdown-root .milkdown .editor {
-  background:rgba(251,253,255,.71);
-  backdrop-filter:blur(24px) saturate(120%);
-  border-radius:22px;
-  outline:1px solid rgba(255,255,255,.76);
-  outline-offset:-1px;
-  box-shadow:0 18px 60px #35516a0c,inset 0 1px 0 #ffffffd9;
+  max-width:none;
+  width:100%;
+  margin:0;
+  padding:40px clamp(24px,6vw,96px) 100px;
+  background:transparent;
+  border-radius:0;
+  outline:none;
+  box-shadow:none;
 }
+body[data-theme=glass] .workspace { background:rgba(251,253,255,.56);backdrop-filter:blur(24px) saturate(120%); }
+body[data-theme=glass] #source-view { max-width:none;width:100%;padding:32px clamp(24px,6vw,96px) 100px; }
 body[data-theme=glass] .desktop-chrome { background:rgba(242,248,250,.65); }
 body[data-theme=glass] .sidebar,
 body[data-theme=glass] #writing-agent {
@@ -60,7 +64,7 @@ body[data-theme=glass] .ProseMirror ::selection { background:#aacbdd66; }
 body[data-theme=glass] :is(#preferences,.utility-dialog) { background:rgba(244,249,252,.96); }
 body[data-theme=glass] .utility-dialog { backdrop-filter:blur(24px); }
 @media(prefers-reduced-transparency:reduce){
-  body[data-theme=glass] #milkdown-root .milkdown .editor,
+  body[data-theme=glass] .workspace,
   body[data-theme=glass] #writing-agent,
   body[data-theme=glass] .sidebar { background:#f4f8fa;backdrop-filter:none; }
   body[data-theme=glass] .agent-entry { background:transparent; }

@@ -32,6 +32,7 @@ export function readPreferences(): Preferences {
       localStorage.setItem('liubai.preferences', JSON.stringify(saved))
       localStorage.setItem('liubai.sarasa-font-v1', '1')
     }
+    if(saved.theme==='pixyll'||saved.theme==='whitey'){saved.theme='light';localStorage.setItem('liubai.preferences',JSON.stringify(saved));localStorage.setItem('liubai.theme','light')}
     return { ...defaults, ...saved }
   }
   catch { return { ...defaults } }
@@ -46,7 +47,7 @@ const pages: Record<string, Row[]> = {
     {group:'快捷鍵與版本', title: '關於', description: 'wuffi · Windows Markdown 編輯器' },
   ],
   '外觀': [
-    {group:'主題', title: '佈景主題', fields: [{ key: 'theme', label: '主題', options: [['light','Github'],['newsprint','Newsprint'],['night','Night'],['pixyll','Pixyll'],['whitey','Whitey'],['glass','Liquid Glass']] }],action:'settings:themes',actionLabel:'自訂主題與主題資料夾…' },
+    {group:'主題', title: '佈景主題', fields: [{ key: 'theme', label: '主題', options: [['light','明亮白'],['newsprint','紙感米'],['night','深夜灰'],['glass','Liquid Glass']] }],action:'settings:themes',actionLabel:'自訂主題與主題資料夾…' },
     {group:'主題',title:'跟隨系統外觀',description:'隨系統自動在淺色與深色佈景主題之間切換',fields:[{key:'followSystem',label:'跟隨系統外觀',check:true}]},
     {group:'工作區', title: '工具列', fields: [{ key: 'toolbar', label: '顯示編輯器工具列', check: true }] },
     {group:'工作區', title: '狀態欄', fields: [{ key: 'status', label: '顯示狀態欄', check: true }] },
@@ -193,16 +194,17 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
         if (row.action) { const button = document.createElement('button'); button.textContent = row.actionLabel!; button.onclick = () => { close(); action(row.action!) }; controls.append(button) }
         if(row.fields?.some(field=>field.key==='theme')){
           section.classList.add('theme-row')
-          const more=document.createElement('details'),summary=document.createElement('summary');summary.textContent=currentLanguage()==='en'?'More themes':'更多主題';more.append(summary)
-          while(controls.firstChild)more.append(controls.firstChild)
+          const select=controls.querySelector<HTMLSelectElement>('select')!,custom=controls.querySelector('button')!
+          select.hidden=true;select.tabIndex=-1
+          controls.replaceChildren()
           const choices=document.createElement('div');choices.className='theme-choices'
-          for(const [value,zh,en]of [['light','白色','Light'],['night','夜間','Dark']]){
+          for(const [value,zh,en]of [['light','明亮白','Bright'],['newsprint','紙感米','Paper'],['night','深夜灰','Midnight'],['glass','Liquid Glass','Liquid Glass']]){
             const choice=document.createElement('button');choice.type='button';choice.dataset.themeChoice=value;choice.setAttribute('aria-pressed',String(get().theme===value))
             const sample=document.createElement('span');sample.className='theme-sample';sample.textContent='Aa';sample.setAttribute('aria-hidden','true')
             const caption=document.createElement('span');caption.textContent=currentLanguage()==='en'?en:zh;choice.append(sample,caption)
             choice.onclick=()=>{change({...get(),theme:value,followSystem:false});sync()};choices.append(choice)
           }
-          controls.append(choices,more)
+          controls.append(choices,custom,select)
         }
         section.append(label, controls); panel.append(section)
       }

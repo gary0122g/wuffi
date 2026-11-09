@@ -41,10 +41,13 @@ body #preferences .toggle-row { grid-template-columns:minmax(0,1fr) 44px; align-
 body #preferences .toggle-row .preference-controls label>span { display:none; }
 body #preferences .theme-row { display:block; margin-bottom:30px; }
 body #preferences .theme-row h2 { font-size:17px; font-weight:650; margin-bottom:14px; }
-body #preferences .theme-choices { display:flex; gap:20px; }
+body #preferences .theme-choices { display:flex; flex-wrap:wrap; gap:20px; padding:4px; }
 body #preferences .preference-controls .theme-choices button { display:flex; flex-direction:column; align-items:center; gap:5px; border:0; background:transparent; padding:0; color:var(--muted); font-size:13px; }
 body #preferences .theme-sample { display:flex; align-items:flex-start; justify-content:center; width:70px; height:60px; padding:6px 8px; border:1px solid #414751; border-radius:10px; background:#24272b; color:#dce9fc; font-size:16px; box-shadow:0 4px 10px #0002; position:relative; }
 body #preferences [data-theme-choice=light] .theme-sample { background:#fff; color:#19212a; border-color:#e9edf2; }
+body #preferences [data-theme-choice=newsprint] .theme-sample { background:#f3f2ee;color:#514638;border-color:#d9d4c8; }
+body #preferences [data-theme-choice=glass] .theme-sample { background:linear-gradient(135deg,#d6e6f3,#ede4f1 50%,#c9dedf);color:#304350;border-color:#d7e4ec; }
+body #preferences .theme-row .preference-controls>button { align-self:flex-start;margin-top:10px; }
 body #preferences .theme-sample::after { content:''; position:absolute; bottom:8px; left:8px; right:8px; height:2px; background:#65b5ff; }
 body #preferences [data-theme-choice][aria-pressed=true] .theme-sample { outline:2px solid #78b9f3; outline-offset:3px; }
 body #preferences .theme-row details { margin-top:10px; font-size:12px; color:var(--muted); }

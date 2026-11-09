@@ -1279,37 +1279,23 @@
     "key": "/主題(T)",
     "items": [
       {
-        "label": "Github",
-        "key": "/主題(T)/Github",
+        "label": "明亮白",
+        "key": "/主題(T)/明亮白",
         "command": "theme:light",
         "accelerator": "",
         "enabled": true
       },
       {
-        "label": "Newsprint",
-        "key": "/主題(T)/Newsprint",
+        "label": "紙感米",
+        "key": "/主題(T)/紙感米",
         "command": "theme:newsprint",
         "accelerator": "",
         "enabled": true
       },
       {
-        "label": "Night",
-        "key": "/主題(T)/Night",
+        "label": "深夜灰",
+        "key": "/主題(T)/深夜灰",
         "command": "theme:night",
-        "accelerator": "",
-        "enabled": true
-      },
-      {
-        "label": "Pixyll",
-        "key": "/主題(T)/Pixyll",
-        "command": "theme:pixyll",
-        "accelerator": "",
-        "enabled": true
-      },
-      {
-        "label": "Whitey",
-        "key": "/主題(T)/Whitey",
-        "command": "theme:whitey",
         "accelerator": "",
         "enabled": true
       },
