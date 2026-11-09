@@ -24,9 +24,9 @@ wuffi 是免費、開源的 Markdown 桌面編輯器。寫筆記、整理靈感�
 
 ## 下載與安裝
 
-[下載 Windows x64 安裝程式](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.2)
+[下載 Windows x64 安裝程式](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.3)
 
-下載 `wuffi_1.0.0-rc.2_x64-setup.exe`，雙擊安裝，完成後從開始功能表開啟 **wuffi**。不需要 Node.js、Rust 或自行編譯。安裝程式會在缺少 WebView2 時連網安裝。
+下載 `wuffi_1.0.0-rc.3_x64-setup.exe`，雙擊安裝，完成後從開始功能表開啟 **wuffi**。不需要 Node.js、Rust 或自行編譯。安裝程式會在缺少 WebView2 時連網安裝。
 
 這份安裝程式尚未數位簽署，Windows 可能顯示未知發行者。下載頁提供 SHA-256 校驗值。支援 Windows 10／11 x64。
 
@@ -47,7 +47,7 @@ Markdown 檔案放在你選擇的位置。第一次需要 Pandoc 轉檔時，會
 
 ## wuffi 雲端 AI
 
-在 AI 面板「⋯」把來源切換成 **wuffi 雲端 AI**，按「登入 wuffi」。在瀏覽器登入官網帳號，再輸入桌面顯示的配對碼。會員方案與額度沿用 [wuffi 網頁版](https://app.wuffi.app/)，可在桌面查看狀態。
+開啟 **設定 → AI**，把來源切換成 **wuffi 雲端 AI**，按「登入 wuffi」。在瀏覽器登入官網帳號，按一下「連結桌面版」，桌面就會自動完成登入，不需輸入配對碼。會員方案與額度沿用 [wuffi 網頁版](https://app.wuffi.app/)，可在桌面查看狀態。
 
 只有選擇雲端並送出訊息時，才會傳送文章範圍與對話。登入憑證只保留到程式關閉；雲端方案到期不影響本機編輯與 Local AI。
 
@@ -65,7 +65,7 @@ wuffi 會連接你另外啟動的模型服務，不會自行下載或啟動語�
    ollama list
    ```
 
-3. 在 wuffi 按 **Ctrl+J** 開啟 AI 面板，再從 **⋯** 開啟連線設定。
+3. 開啟 **設定 → AI**；AI 面板的 **⋯** 按鈕也會直接開啟這個設定頁。
 4. **Base URL** 填入 `http://127.0.0.1:11434/v1`；**Model** 填入 `qwen2.5:7b`，或你實際下載的完整模型名稱。
 5. 儲存、測試連線，再送出一個簡短的寫作請求。
 

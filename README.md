@@ -24,9 +24,9 @@ No account is required for desktop editing or Local AI. No trial countdown, acti
 
 ## Download and install
 
-[Download for Windows x64](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.2)
+[Download for Windows x64](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.3)
 
-Download `wuffi_1.0.0-rc.2_x64-setup.exe`, run the installer, then open **wuffi** from the Start menu. No Node.js, Rust, or compilation required. The installer downloads WebView2 if it is missing.
+Download `wuffi_1.0.0-rc.3_x64-setup.exe`, run the installer, then open **wuffi** from the Start menu. No Node.js, Rust, or compilation required. The installer downloads WebView2 if it is missing.
 
 This installer is not digitally signed, so Windows may show an unknown-publisher notice. SHA-256 checksums are included with the download. Supports Windows 10/11 x64.
 
@@ -47,7 +47,7 @@ Markdown files remain wherever you save them. Pandoc is downloaded with your con
 
 ## wuffi Cloud AI
 
-Open **⋯** in the AI panel, choose **wuffi Cloud AI**, and click **Sign in to wuffi**. Sign in in your browser and enter the pairing code shown by the desktop app. Your plan and allowance are shared with [wuffi on the web](https://app.wuffi.app/) and visible in the desktop panel.
+Open **Settings → AI**, choose **wuffi Cloud AI**, and click **Sign in to wuffi**. Sign in in your browser, then click **Connect desktop**. The desktop app completes sign-in automatically—no code to copy. Your plan and allowance are shared with [wuffi on the web](https://app.wuffi.app/) and visible in the desktop panel.
 
 Document context and conversation are sent only when you select Cloud AI and send a request. Credentials remain in memory until the app closes. An expired cloud plan never restricts local editing or Local AI.
 
@@ -65,7 +65,7 @@ wuffi connects to a model service you run separately. It does not download or st
    ollama list
    ```
 
-3. Open the AI panel with **Ctrl+J**, then open **⋯** to edit the connection.
+3. Open **Settings → AI** to edit the connection. The AI panel’s **⋯** button also opens this page.
 4. Set **Base URL** to `http://127.0.0.1:11434/v1` and **Model** to `qwen2.5:7b` (or your downloaded model's exact name).
 5. Save, test the connection, and send a short writing request.
 

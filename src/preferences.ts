@@ -1,4 +1,5 @@
 import {translate,currentLanguage} from './i18n'
+import {mountAISettings} from './ai-settings'
 export type Preferences = {
   uiLanguage:'zh-TW'|'en'; startup: string; autoSave: boolean; saveOnSwitch: boolean; extension: string;
   fontSize: number; lineHeight: number; zoom: number; status: boolean; toolbar: boolean; theme: string;
@@ -137,7 +138,7 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
     preview()
     nav.replaceChildren(); panel.replaceChildren()
     const query = search.value.trim().toLowerCase()
-    for (const name of Object.keys(pages)) {
+    for (const name of [...Object.keys(pages),'AI']) {
       const button = document.createElement('button'); button.textContent = name
       button.dataset.page = name
       button.className = selected === name && !query ? 'selected' : ''
@@ -146,6 +147,9 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
       nav.append(button)
     }
     const heading = document.createElement('h1'); heading.textContent = query ? '搜尋結果' : selected; panel.append(heading)
+    const ai=(!query&&selected==='AI')||!!query&&/ai|模型|人工智慧|會員|登入|model|cloud|ollama/i.test(query)
+    root.querySelector<HTMLElement>('.preferences-preview')!.hidden=ai
+    if(ai){mountAISettings(panel);if(!query)return}
     for (const [name, rows] of Object.entries(pages)) {
       if (!query && name !== selected) continue
       for (const row of rows) {
@@ -184,6 +188,7 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
     }
   }
   search.oninput = render
+  document.addEventListener('wuffi:open-ai-settings',()=>{if(root.hidden)previousFocus=document.activeElement as HTMLElement;selected='AI';root.hidden=false;search.value='';render();nav.querySelector<HTMLButtonElement>('.selected')?.focus()})
   root.querySelector('header button')!.addEventListener('click', close)
   root.addEventListener('keydown', event => {
     if(event.isComposing)return

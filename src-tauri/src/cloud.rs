@@ -53,7 +53,9 @@ impl Cloud {
                 let mut state = self.state.lock().unwrap();
                 if state.generation != generation { return Err("登入已取消".into()); }
                 state.device = Some(device);
-                Ok(json!({"code":value["user_code"],"expiresIn":value["expires_in"]}))
+                let code=value["user_code"].as_str().ok_or("登入回覆無效")?;
+                if code.len()!=12 || !code.bytes().all(|b| b.is_ascii_hexdigit()) { return Err("登入回覆無效".into()); }
+                Ok(json!({"browserUrl":format!("{ORIGIN}/auth/desktop?code={code}"),"expiresIn":value["expires_in"]}))
             }
             "poll" => {
                 let (device, generation) = { let s = self.state.lock().unwrap(); (s.device.clone().ok_or("請重新登入")?, s.generation) };

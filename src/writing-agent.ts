@@ -3,6 +3,7 @@ import type {WritingAPI,WritingSnapshot,WritingAction} from './writing-api'
 import type {Preferences} from './preferences'
 import {installFloatingAgent} from './floating-agent'
 import {installCloudAccount} from './cloud-account'
+import {registerAISettings,openAISettings} from './ai-settings'
 import {installDogCompanion} from './dog-companion'
 
 export function installWritingAgent(api:WritingAPI,getPreferences:()=>Preferences){
@@ -110,7 +111,7 @@ export function installWritingAgent(api:WritingAPI,getPreferences:()=>Preference
   panel.querySelector<HTMLButtonElement>('[data-agent=stop]')!.onclick=cancel
   panel.querySelector<HTMLButtonElement>('[data-agent=new]')!.onclick=()=>{cancel();history=[];conversationDocument=api.snapshot().documentId;intro();input.focus()}
   const connectionValue=()=>({baseURL:(connectionForm.elements.namedItem('baseURL') as HTMLInputElement).value,model:(connectionForm.elements.namedItem('model') as HTMLInputElement).value})
-  panel.querySelector<HTMLButtonElement>('[data-agent=connect]')!.onclick=()=>{connection.hidden=!connection.hidden;if(!connection.hidden)void window.desktop?.agentConnection().then(value=>{for(const key of ['baseURL','model'] as const)(connectionForm.elements.namedItem(key) as HTMLInputElement).value=value[key]}).catch(error=>connectionStatus.textContent=String(error))}
+  panel.querySelector<HTMLButtonElement>('[data-agent=connect]')!.onclick=()=>{close(false);openAISettings()}
   connectionForm.onsubmit=e=>{e.preventDefault();void window.desktop?.agentConnection({action:'save',...connectionValue()}).then(()=>{connectionStatus.textContent=t('已儲存，只有送出訊息時才傳送文章','Saved. Document content is sent only when you send a message.')}).catch(error=>connectionStatus.textContent=String(error))}
   panel.querySelector<HTMLButtonElement>('[data-agent=test]')!.onclick=()=>{connectionStatus.textContent=t('正在連線…','Connecting…');void window.desktop?.agentConnection({action:'test',...connectionValue()}).then(value=>connectionStatus.textContent=value.models?.includes(connectionValue().model)?t('模型已就緒','Model ready'):t('服務可連線，但模型未出現在清單中','Connected, but the model is not listed')).catch(error=>connectionStatus.textContent=String(error))}
   const search=functions.querySelector('input')!,list=functions.querySelector('div')!
@@ -119,5 +120,6 @@ export function installWritingAgent(api:WritingAPI,getPreferences:()=>Preference
   search.oninput=renderFunctions
   document.addEventListener('keydown',event=>{if(event.isComposing)return;if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){event.preventDefault();open(false)}else if(event.key==='Escape'&&!panel.hidden&&!document.querySelector('dialog[open]')&&!document.querySelector('#preferences:not([hidden])')){event.preventDefault();event.stopPropagation();close(false)}})
   const cloud=installCloudAccount(panel,()=>{cancel();history=[];intro()})
+  registerAISettings(connection,()=>{void window.desktop?.agentConnection().then(value=>{for(const key of ['baseURL','model'] as const)(connectionForm.elements.namedItem(key) as HTMLInputElement).value=value[key]}).catch(error=>connectionStatus.textContent=String(error));if(cloud.provider()==='cloud')void cloud.refresh()})
   intro();return {open,close}
 }

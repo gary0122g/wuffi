@@ -25,6 +25,17 @@ try{
  assert.equal(await js('document.body.dataset.runtime'),'tauri')
  assert.equal(await js('document.querySelectorAll(".tauri-window-controls button").length'),3)
  assert.equal(await js('document.querySelector("#writing-agent").hidden'),true);assert.equal(requests.length,0,'Writing does not automatically call AI')
+ await js("document.dispatchEvent(new Event('wuffi:open-ai-settings'))")
+ await client.until("!document.querySelector('#preferences').hidden && !!document.querySelector('#preferences .agent-connection form')",'dedicated AI settings page')
+ assert.equal(await js("document.querySelector('#preferences .preferences-tabs .selected').textContent"),'AI')
+ await js("document.querySelector('#preferences .cloud-account select').value='cloud';document.querySelector('#preferences .cloud-account select').dispatchEvent(new Event('change'))")
+ assert.equal(await js("document.querySelector('#preferences .agent-connection form').hidden"),true)
+ await js("document.querySelector('#preferences .cloud-account select').value='local';document.querySelector('#preferences .cloud-account select').dispatchEvent(new Event('change'))")
+ assert.equal(await js("document.querySelector('#preferences .agent-connection form').hidden"),false)
+ await js("document.querySelector('#preferences [data-page=檔案]').click();document.querySelector('#preferences [data-page=AI]').click()")
+ assert.equal(await js("document.querySelectorAll('.agent-connection').length"),1,'settings share a single state')
+ const settingsCapture=await client.send('Page.captureScreenshot',{format:'png'});await fs.writeFile(path.join(output,'ai-settings.png'),Buffer.from(settingsCapture.data,'base64'))
+ await js("document.querySelector('#preferences header button').click()")
  const command=async name=>{await js(`window.__TAURI__.event.emit('desktop:command',${JSON.stringify(name)})`);await wait(250)}
  const setDocument=async markdown=>{if(!await js('document.body.classList.contains("source-mode")'))await command('source');await js(`document.querySelector('#source-editor').value=${JSON.stringify(markdown)};document.querySelector('#source-editor').dispatchEvent(new Event('input',{bubbles:true}))`);await command('source');await wait(150)}
  const content=async()=>{await client.until('!!document.querySelector(".ProseMirror")','visual editor after async remount');return js('(()=>{const e=document.querySelector(".ProseMirror").cloneNode(true);e.querySelectorAll(".inline-review").forEach(w=>w.remove());return e.textContent})()')}

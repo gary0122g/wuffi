@@ -223,8 +223,9 @@ async fn desktop_call(
             }
             let value = host.cloud.action(&host.client, action).await?;
             if action == "start" {
-                app.opener().open_url(format!("{}/auth/desktop", cloud::ORIGIN), None::<&str>).map_err(fail)?;
+                app.opener().open_url(value["browserUrl"].as_str().ok_or("登入網址無效")?, None::<&str>).map_err(fail)?;
             }
+            if action == "poll" && value["signedIn"] == true { let _=window.unminimize();let _=window.set_focus(); }
             Ok(value)
         }
         "agentConnection" => match field(&data, "action") {

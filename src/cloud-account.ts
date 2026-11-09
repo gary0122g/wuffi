@@ -13,6 +13,8 @@ export function installCloudAccount(panel:HTMLElement,changed:()=>void){
   label.append(select)
   const localForm=panel.querySelector<HTMLFormElement>('.agent-connection form')!
   const details=document.createElement('div');details.hidden=true
+  try{if(localStorage.getItem('wuffi.ai.provider')==='cloud'){select.value='cloud';details.hidden=false;localForm.hidden=true;badge.textContent=t('wuffi 雲端 AI','wuffi Cloud AI')}}catch{}
+  const saveProvider=()=>{try{localStorage.setItem('wuffi.ai.provider',select.value)}catch{}}
   const privacy=document.createElement('p');privacy.textContent=t('送出時會將本次文章內容與對話傳至 wuffi 雲端。修改仍由你確認。本機編輯與 Local AI 不需會員。','Sending shares this request’s document context and conversation with wuffi Cloud. You review all edits. Local editing and Local AI need no membership.')
   const state=document.createElement('p');state.setAttribute('role','status');state.textContent=t('尚未登入','Not signed in')
   const controls=document.createElement('div')
@@ -27,24 +29,24 @@ export function installCloudAccount(panel:HTMLElement,changed:()=>void){
   add(t('登入 wuffi','Sign in to wuffi'),async()=>{
     stop();const current=epoch,value=await api({action:'start'});if(current!==epoch)return
     const deadline=Date.now()+Math.min(value.expiresIn||600,600)*1000
-    state.textContent=t('請在瀏覽器登入，輸入配對碼：','Sign in in your browser and enter this pairing code: ')+value.code
+    state.textContent=t('請在瀏覽器登入並按「連結桌面版」，完成後會自動返回。','Sign in in your browser and choose “Connect desktop”. The app will return automatically.')
     async function poll(){
       if(current!==epoch)return
       if(Date.now()>=deadline){state.textContent=t('配對已過期，請重新登入','Pairing expired. Please sign in again.');return}
       try{const result=await api!({action:'poll'});if(current!==epoch)return;if(result.pending){timer=setTimeout(poll,5000)}else{await refresh()}}
-      catch(error){if(current===epoch)state.textContent=String(error)}
+      catch(error){if(current===epoch){state.textContent=t('正在重新確認登入… ','Checking sign-in again… ')+String(error);timer=setTimeout(poll,5000)}}
     }
     timer=setTimeout(poll,5000)
   })
   add(t('更新會員狀態','Refresh membership'),refresh)
   add(t('官網／管理方案','Website / Manage plan'),async()=>{await api({action:'website'})})
   add(t('登出／取消登入','Sign out / Cancel sign-in'),async()=>{
-    stop();select.value='local';badge.textContent='Local AI';details.hidden=true;localForm.hidden=false;changed()
+    stop();select.value='local';saveProvider();badge.textContent='Local AI';details.hidden=true;localForm.hidden=false;changed()
     try{await api({action:'logout'})}finally{render({signedIn:false})}
   })
   details.append(privacy,state,controls);section.append(label,details)
   panel.querySelector('.agent-connection')!.prepend(section)
-  select.onchange=()=>{changed();badge.textContent=select.value==='cloud'?t('wuffi 雲端 AI','wuffi Cloud AI'):'Local AI';details.hidden=select.value!=='cloud';localForm.hidden=select.value==='cloud';if(select.value==='cloud')void refresh()}
+  select.onchange=()=>{saveProvider();changed();badge.textContent=select.value==='cloud'?t('wuffi 雲端 AI','wuffi Cloud AI'):'Local AI';details.hidden=select.value!=='cloud';localForm.hidden=select.value==='cloud';if(select.value==='cloud')void refresh()}
   window.addEventListener('beforeunload',stop,{once:true})
   return {provider:()=>select.value,refresh}
 }
