@@ -27,7 +27,7 @@ import { createPreferences, readPreferences, type Preferences } from './preferen
 import { createEditing } from './editing'
 import { inlineMarks, inlineRemark } from './inline-marks'
 import { markdownExtensions,setReferenceImageResolver } from './markdown-extensions'
-import { renderDiagram,diagramsForDocument } from './diagrams'
+import { renderDiagram,diagramsForDocument,warmDiagrams } from './diagrams'
 import { remarkInlineLinkPlugin } from '@milkdown/kit/preset/commonmark'
 import { showDesktopSettings,restoreCustomTheme } from './desktop-settings'
 import { languages } from '@codemirror/language-data'
@@ -512,6 +512,11 @@ async function mountVisual(): Promise<void> {
     ui.visualRoot.querySelector('.ProseMirror')?.setAttribute('spellcheck', String(preferences.spellcheck))
     visualReady = true
     refreshTypewriter()
+    {
+      const blocks:{language:string;content:string}[]=[]
+      editor.editor.action(ctx=>ctx.get(editorViewCtx).state.doc.descendants(node=>{if(node.type.name==='code_block')blocks.push({language:String(node.attrs.language||''),content:node.textContent});return true}))
+      warmDiagrams(blocks,()=>crepe===editor&&visualDocumentId===docId)
+    }
   } catch (error) {
     console.error('Failed to start visual editor', error)
     notify('視覺編輯器無法啟動，已切換至原始碼')
