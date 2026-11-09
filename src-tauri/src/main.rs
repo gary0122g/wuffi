@@ -277,7 +277,9 @@ async fn desktop_call(
                 }
                 if field(&data, "provider") == "cloud" {
                     let credential = host.cloud.token()?;
-                    cloud::call(&host.client, "agent", Some(&credential), Some(data)).await
+                    let reply = cloud::call(&host.client, "agent", Some(&credential), Some(data)).await;
+                    if let Err(error) = &reply { host.cloud.rejected(error, &credential); }
+                    reply
                 } else {
                     agent::request(&host.client, connection(&host), data).await
                 }
@@ -595,9 +597,10 @@ fn main() {
             let images = storage::read_json(&storage.root.join("image-access.json"))
                 .and_then(|v| serde_json::from_value(v).ok())
                 .unwrap_or_default();
+            let cloud = cloud::Cloud::new(storage.root.join("cloud-session.json"));
             app.manage(Host {
                 updates: updates::Updates::default(),
-                cloud: cloud::Cloud::default(),
+                cloud,
                 conversion_lock: tokio::sync::Mutex::new(()),
                 conversion_cancel: Mutex::new(None),
                 storage,
