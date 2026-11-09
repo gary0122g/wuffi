@@ -22,7 +22,7 @@ jobs:
           npm run test:rust
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build Windows installer
-        run: npx tauri build --bundles nsis -- --locked
+        run: npx tauri build --bundles nsis --config '{"bundle":{"createUpdaterArtifacts":false}}' -- --locked
       - name: Record source and checksums
         shell: pwsh
         run: |

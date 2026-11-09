@@ -72,3 +72,10 @@ body #preferences :is(button,input,select,summary):focus-visible { outline:2px s
  body #preferences .theme-sample { width:58px; }
 }
 @media(prefers-reduced-motion:reduce) { body #preferences input[type=checkbox],body #preferences input[type=checkbox]::before { transition:none; } }
+.app-updates label { display:flex;gap:12px;align-items:center; }
+.app-updates .update-hint { color:var(--muted);font-size:12px; }
+.app-updates .update-actions { display:flex;gap:10px;flex-wrap:wrap; }
+.app-updates button { padding:7px 12px;background:var(--side);color:var(--ink);border:1px solid var(--line);border-radius:4px; }
+.app-updates button:disabled { opacity:.5;cursor:wait; }
+.app-updates .update-notes { white-space:pre-wrap;font-size:13px;max-height:220px;overflow:auto; }
+body.update-available .writing-settings::after { content:'';position:absolute;right:1px;top:1px;width:7px;height:7px;border-radius:50%;background:#467dab; }

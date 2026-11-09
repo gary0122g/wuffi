@@ -10,6 +10,7 @@ mod platform;
 mod printing;
 mod settings;
 mod storage;
+mod updates;
 use serde_json::{json, Value};
 use std::{
     collections::{HashMap, HashSet},
@@ -26,6 +27,7 @@ use tauri_plugin_opener::OpenerExt;
 use tokio_util::sync::CancellationToken;
 
 struct Host {
+    updates: updates::Updates,
     cloud: cloud::Cloud,
     conversion_lock: tokio::sync::Mutex<()>,
     conversion_cancel: Mutex<Option<CancellationToken>>,
@@ -116,6 +118,7 @@ async fn desktop_call(
         return Err("Invalid window".into());
     }
     match method.as_str() {
+        "updates" => return updates::action(&app, &host, field(&data,"action")).await,
         "settings" => return settings::handle(&app, &window, &host, data),
         "newWindow" => {
             let id = uuid::Uuid::new_v4().to_string();
@@ -574,6 +577,7 @@ fn main() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             let root = if let Some(profile) = arg("--profile") {
                 PathBuf::from(profile)
@@ -592,6 +596,7 @@ fn main() {
                 .and_then(|v| serde_json::from_value(v).ok())
                 .unwrap_or_default();
             app.manage(Host {
+                updates: updates::Updates::default(),
                 cloud: cloud::Cloud::default(),
                 conversion_lock: tokio::sync::Mutex::new(()),
                 conversion_cancel: Mutex::new(None),

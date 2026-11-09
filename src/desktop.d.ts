@@ -2,6 +2,8 @@ type NativeFile = { token: string; path: string; title: string; content: string 
 type FolderEntry = { token: string; name: string; directory: boolean }
 interface Window {
   desktop?: {
+    updates?(data:{action:'status'|'check'|'install'}):Promise<{currentVersion:string;available?:boolean;version?:string;notes?:string;installed?:boolean}>
+    onUpdateProgress?(callback:(data:{received:number;total?:number;installing?:boolean})=>void):void
     confirm?(message:string):Promise<boolean>
     drafts?(data:{action:'read'|'write';window:string;snapshot?:import('./draft-journal').DraftSnapshot}):Promise<import('./draft-journal').DraftSnapshot|null|boolean>
     benchmarkReport?(data:Record<string,unknown>):Promise<unknown>

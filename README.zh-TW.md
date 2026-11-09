@@ -1,5 +1,7 @@
 # wuffi
 
+自動更新：到 **設定 → 一般 → 軟體更新** 檢查版本。啟動時可背景檢查，確認後才從 GitHub Releases 下載並驗證更新簽章。請先儲存所有視窗的文件再安裝。舊版 rc.3 使用者需要先手動安裝 rc.4 一次。更新簽章與 Windows 發行者簽章不同；目前 Windows 安裝程式仍未取得 SignPath 簽章。
+
 [Code signing policy／程式碼簽署政策](CODE_SIGNING.md) · [桌面版隱私政策](PRIVACY.md)
 
 **留點空間，給想寫的話。也給陪你寫字的小夥伴。**
@@ -26,15 +28,15 @@ wuffi 是免費、開源的 Markdown 桌面編輯器。寫筆記、整理靈感�
 
 ## 下載與安裝
 
-[下載 Windows x64 安裝程式](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.3)
+[下載 Windows x64 安裝程式](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.4)
 
-下載 `wuffi_1.0.0-rc.3_x64-setup.exe`，雙擊安裝，完成後從開始功能表開啟 **wuffi**。不需要 Node.js、Rust 或自行編譯。安裝程式會在缺少 WebView2 時連網安裝。
+下載 `wuffi_1.0.0-rc.4_x64-setup.exe`，雙擊安裝，完成後從開始功能表開啟 **wuffi**。不需要 Node.js、Rust 或自行編譯。安裝程式會在缺少 WebView2 時連網安裝。
 
 這份安裝程式尚未數位簽署，Windows 可能顯示未知發行者。下載頁提供 SHA-256 校驗值。支援 Windows 10／11 x64。
 
 ## 從原始碼啟動
 
-以下建置方式適用於 **Windows x64**。請先安裝 Git、Node.js **22.13 以上**、Rust **1.88 以上**（MSVC）、包含 Windows SDK 的 Visual Studio C++ Build Tools，以及 WebView2 Runtime。
+以下建置方式適用於 **Windows x64**。請先安裝 Git、Node.js **22.13 以上**、Rust **1.90 以上**（MSVC）、包含 Windows SDK 的 Visual Studio C++ Build Tools，以及 WebView2 Runtime。
 
 ```powershell
 git clone https://github.com/gary0122g/wuffi.git

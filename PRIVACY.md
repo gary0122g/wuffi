@@ -10,6 +10,8 @@ wuffi Cloud is optional. Browser sign-in uses Google authentication through http
 
 ## Other network requests
 
+- By default, wuffi checks GitHub for update metadata after startup. This does not upload documents or AI conversations. Disable this in Settings → General → Software updates. Downloading and installing an update requires confirmation; update packages come from GitHub Releases and are signature-verified.
+
 - The installer may download Microsoft's WebView2 runtime when it is missing.
 - Document conversion offers to download Pandoc from its official GitHub release on first use, with checksum verification. Once installed, conversion can run offline.
 - Rendering externally hosted images in a document can contact their hosts, revealing ordinary connection information such as your IP address. Use local images for offline documents.

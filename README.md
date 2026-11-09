@@ -24,17 +24,23 @@ No account is required for desktop editing or Local AI. No trial countdown, acti
 
 ## Download and install
 
-[Download for Windows x64](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.3)
+[Download for Windows x64](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.4)
 
-Download `wuffi_1.0.0-rc.3_x64-setup.exe`, run the installer, then open **wuffi** from the Start menu. No Node.js, Rust, or compilation required. The installer downloads WebView2 if it is missing.
+Download `wuffi_1.0.0-rc.4_x64-setup.exe`, run the installer, then open **wuffi** from the Start menu. No Node.js, Rust, or compilation required. The installer downloads WebView2 if it is missing.
 
 This installer is not digitally signed, so Windows may show an unknown-publisher notice. SHA-256 checksums are included with the download. Supports Windows 10/11 x64.
 
 [Code signing policy](CODE_SIGNING.md) · [Desktop privacy policy](PRIVACY.md)
 
+## Updates
+
+Open **Settings → General → Software updates** to check for a newer version. Startup checks are optional and never install automatically. Downloads come from GitHub Releases and are verified with wuffi's update signing key. Save documents in every window before confirming installation. Existing rc.3 users need to install rc.4 manually once to gain this feature.
+
+Update signatures are separate from Windows publisher signatures: the Windows installer remains unsigned while our SignPath application is under review.
+
 ## Run from source
 
-These instructions target **Windows x64**. Install Git, Node.js **22.13+**, Rust **1.88+** (MSVC), Visual Studio C++ Build Tools with the Windows SDK, and WebView2 Runtime.
+These instructions target **Windows x64**. Install Git, Node.js **22.13+**, Rust **1.90+** (MSVC), Visual Studio C++ Build Tools with the Windows SDK, and WebView2 Runtime.
 
 ```powershell
 git clone https://github.com/gary0122g/wuffi.git

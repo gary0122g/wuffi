@@ -23,6 +23,11 @@ try{
  client=await connect(port);const js=client.evaluate
  await client.until('!!document.querySelector(".ProseMirror[contenteditable=true]")&&document.querySelectorAll(".chrome-menubar nav button").length===7','editor and desktop bridge')
  assert.equal(await js('document.body.dataset.runtime'),'tauri')
+ assert.match((await js("window.desktop.updates({action:'status'})")).currentVersion,/^1\./)
+ if(process.env.WUFFI_TEST_BACKGROUND==='1'){
+  assert(await js("window.desktop.updates({action:'check'}).then(()=>false,error=>String(error).includes('disabled during background'))"),'Background tests never contact the updater')
+  assert(await js("window.desktop.updates({action:'install'}).then(()=>false,error=>String(error).includes('disabled during background'))"),'Background tests cannot launch an installer')
+ }
  assert.equal(await js('document.querySelectorAll(".tauri-window-controls button").length'),3)
  assert.equal(await js('document.querySelector("#writing-agent").hidden'),true);assert.equal(requests.length,0,'Writing does not automatically call AI')
  await js("document.dispatchEvent(new Event('wuffi:open-ai-settings'))")

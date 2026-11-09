@@ -35,11 +35,13 @@ function installTauriDesktop(){
   if(name.startsWith('zoom:')){zoom=name==='zoom:reset'?1:Math.max(.5,Math.min(2,Math.round((zoom+(name==='zoom:in'?.1:-.1))*10)/10));void call('preferences',{zoom}).catch(console.error);return}
   if(name.startsWith('native:')){void editCommand(name).catch(console.error);return}
   if(name==='agent'){document.querySelector<HTMLButtonElement>('.agent-entry')?.click();return}
-  if(name==='about'){alert(`wuffi 1.0.0-rc.3\nTauri + Milkdown + CodeMirror`);return}
+  if(name==='about'){alert(`wuffi 1.0.0-rc.4\nTauri + Milkdown + CodeMirror`);return}
   for(const callback of commands)callback(name)
  }
  void tauri.event.listen<string>('desktop:command',event=>command(event.payload)).catch(console.error)
  window.desktop={
+  updates:data=>call('updates',data),
+  onUpdateProgress:callback=>{void tauri.event.listen<{received:number;total?:number;installing?:boolean}>('updater:progress',event=>callback(event.payload))},
   confirm:message=>call<boolean>('message',{message,confirm:true}),
   drafts:data=>call('drafts',data),
   benchmarkReport:window.__LIUBAI_BENCHMARK__?data=>call('benchmark:ready',data):undefined,

@@ -1,5 +1,6 @@
 import {translate,currentLanguage} from './i18n'
 import {mountAISettings} from './ai-settings'
+import {mountAppUpdates} from './app-updates'
 import {createElement, Palette, Type, FolderOpen, FileCode, Upload, Settings, Sparkles} from 'lucide'
 export type Preferences = {
   uiLanguage:'zh-TW'|'en'; startup: string; autoSave: boolean; saveOnSwitch: boolean; extension: string;
@@ -209,7 +210,8 @@ export function createPreferences(get: () => Preferences, change: (value: Prefer
         section.append(label, controls); panel.append(section)
       }
     }
-    if(query&&!panel.querySelector('.preference-row,.agent-connection')){const empty=document.createElement('p');empty.className='preferences-intro';empty.textContent='找不到符合的設定，試試「字型」、「自動儲存」或「模型」。';panel.append(empty)}
+    if((!query&&selected==='一般')||(query&&/更新|update|版本|version/.test(query)))mountAppUpdates(panel)
+    if(query&&!panel.querySelector('.preference-row,.agent-connection,.app-updates')){const empty=document.createElement('p');empty.className='preferences-intro';empty.textContent='找不到符合的設定，試試「字型」、「自動儲存」或「模型」。';panel.append(empty)}
   }
   search.oninput = render
   document.addEventListener('wuffi:open-ai-settings',()=>{if(root.hidden)previousFocus=document.activeElement as HTMLElement;selected='AI';root.hidden=false;search.value='';render();nav.querySelector<HTMLButtonElement>('.selected')?.focus()})

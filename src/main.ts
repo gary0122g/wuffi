@@ -1,4 +1,5 @@
 import './tauri-desktop'
+import {initializeAppUpdates} from './app-updates'
 import {confirmDialog} from './confirm-dialog'
 import {createDraftJournal} from './draft-journal'
 import {Plugin, TextSelection} from '@milkdown/kit/prose/state'
@@ -1305,6 +1306,7 @@ void (async()=>{
 new ResizeObserver(refreshTypewriter).observe(document.querySelector('.workspace')!)
 
 installLocalization()
+initializeAppUpdates()
 
 document.addEventListener('ui-language-change',()=>{updateNativeState();renderDocuments()})
 function syncReadOnly(){

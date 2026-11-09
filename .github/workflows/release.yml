@@ -1,0 +1,44 @@
+name: Publish signed update
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: windows-update-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --ignore-scripts
+      - name: Verify version and run checks
+        id: version
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          "version=$version" >> $env:GITHUB_OUTPUT
+          npm test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run test:rust
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: v${{ steps.version.outputs.version }}
+          releaseName: wuffi v${{ steps.version.outputs.version }}
+          releaseBody: 'Windows Tauri release. Local editing and Local AI remain free. Install this version once to enable signed in-app updates.'
+          releaseDraft: false
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          args: --bundles nsis -- --locked
+      - name: Publish update discovery metadata
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/publish-update-channel.mjs
