@@ -327,3 +327,6 @@ body[data-theme] #milkdown-root .milkdown .ProseMirror :is(p,li,blockquote,td,th
 #source-code .cm-scroller, #split-editor, .preview-content { line-height:var(--editor-line-height,1.6); }
 body.typewriter-mode #milkdown-root .milkdown .editor { padding-top:var(--typewriter-space,50vh)!important; padding-bottom:var(--typewriter-space,50vh)!important; }
 body.typewriter-mode #source-code .cm-content { padding-top:var(--typewriter-space,50vh)!important; padding-bottom:var(--typewriter-space,50vh)!important; }
+/* Mermaid measures each diagram in a temporary element at the end of <body>.
+   Keep it out of the page flow so rendering never adds a window scrollbar. */
+body > div[id^="ddiagram-"] { position: fixed !important; top: 0; left: -10000px; }

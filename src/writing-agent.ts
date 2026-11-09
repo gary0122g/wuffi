@@ -1,5 +1,5 @@
 import {currentLanguage,translate} from './i18n'
-import type {WritingAPI,WritingSnapshot,WritingAction} from './writing-api'
+import {resolveEdit,type ResolvedAction,type WritingAPI,type WritingSnapshot} from './writing-api'
 import type {Preferences} from './preferences'
 import {installFloatingAgent} from './floating-agent'
 import {installCloudAccount} from './cloud-account'
@@ -47,7 +47,7 @@ export function installWritingAgent(api:WritingAPI,getPreferences:()=>Preference
       }catch(error){say('assistant',error instanceof Error?error.message:String(error))}
     })()});return undo
   }
-  function proposal(action:WritingAction,snapshot:WritingSnapshot,parent:HTMLElement){
+  function proposal(action:ResolvedAction,snapshot:WritingSnapshot,parent:HTMLElement){
     const card=document.createElement('section');card.className='agent-proposal'
     const title=document.createElement('strong');title.textContent=action.kind==='replace'?t('修改提案','Suggested edit'):action.kind==='settings'?t('設定提案','Suggested settings'):t('操作提案','Suggested action');card.append(title)
     if(action.kind==='replace'){
@@ -99,8 +99,10 @@ export function installWritingAgent(api:WritingAPI,getPreferences:()=>Preference
       pending(true)
       const reply=api.validate(await window.desktop.agentRequest({provider:cloud.provider(),prompt,context:{...snapshot,markdown:requestedScope==='selection'?'':snapshot.markdown},scope:requestedScope,history:history.slice(-24),capabilities:api.capabilities(),preferences:getPreferences()}))
       if(current!==generation)return
-      if(reply.actions.some(action=>action.kind==='replace'&&action.scope!==requestedScope))throw Error(t('AI 回覆的修改範圍與本次要求不符，已保留原文，請重新提出修改。','The AI returned a different edit scope. Your document is unchanged; request a fresh revision.'))
-      const answer=say('assistant',reply.message);for(const action of reply.actions)proposal(action,snapshot,answer)
+      // An edit names one passage; it is reviewed as a change to the requested scope.
+      const actions=reply.actions.map(action=>resolveEdit(action,snapshot,requestedScope as 'selection'|'document'))
+      if(actions.some(action=>action.kind==='replace'&&action.scope!==requestedScope))throw Error(t('AI 回覆的修改範圍與本次要求不符，已保留原文，請重新提出修改。','The AI returned a different edit scope. Your document is unchanged; request a fresh revision.'))
+      const answer=say('assistant',reply.message);for(const action of actions)proposal(action,snapshot,answer)
       history.push({role:'user',content:prompt},{role:'assistant',content:JSON.stringify(reply)})
       thread.scrollTop=thread.scrollHeight
     }catch(error){if(current===generation)say('assistant',error instanceof Error?error.message:String(error))}

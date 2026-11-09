@@ -3,9 +3,14 @@ import { Plugin } from '@milkdown/kit/prose/state'
 import { codeBlockConfig } from '@milkdown/kit/component/code-block'
 import { openInlineSource } from './inline-source'
 import { readPreferences } from './preferences'
+import { previewCache } from './preview-cache'
 let engine:Promise<typeof import('./math-renderer')>|undefined
 export async function renderMath(source:string,display=true,format:'svg'|'mathml'='svg'){const module=await(engine??=import('./math-renderer'));return module.mathSVG(source,display,readPreferences().mathPhysics,format)}
-function preview(source:string,apply:(html:string)=>void){const placeholder=document.createElement('div');placeholder.className='mathjax-preview';placeholder.textContent='正在排版公式…';void renderMath(source).then(html=>{apply('<div class="mathjax-preview">'+html+'</div>');requestAnimationFrame(()=>document.dispatchEvent(new Event('formula-preview-ready')))}).catch(error=>{placeholder.textContent=String(error);apply(placeholder.outerHTML)});return placeholder}
+// Typeset formulas survive Milkdown rebuilding a block that scrolled back into
+// view. A cached block needs no new batch pass, so it does not announce itself.
+const typeset=previewCache()
+const mathKey=(source:string)=>{const prefs=readPreferences();return prefs.mathPhysics+'\0'+prefs.mathNumbering+'\0'+source}
+function preview(source:string,apply:(html:string)=>void){const cached=typeset.get(mathKey(source));if(cached!==undefined)return cached;const placeholder=document.createElement('div');placeholder.className='mathjax-preview';placeholder.textContent='正在排版公式…';void renderMath(source).then(html=>{apply('<div class="mathjax-preview">'+html+'</div>');requestAnimationFrame(()=>document.dispatchEvent(new Event('formula-preview-ready')))}).catch(error=>{placeholder.textContent=String(error);apply(placeholder.outerHTML)});return placeholder}
 export const advancedMath=$prose(ctx=>{
   const config=ctx.get(codeBlockConfig.key),previous=config.renderPreview
   config.renderPreview=(language,content,apply)=>{if(language.toLowerCase()==='latex'||(language.toLowerCase()==='math'&&readPreferences().codeMath))return preview(content,apply);return previous(language,content,apply)}
@@ -17,7 +22,7 @@ export const advancedMath=$prose(ctx=>{
         if(!nodes.length)return
         const module=await(engine??=import('./math-renderer')),prefs=readPreferences(),html=module.mathBatch(nodes,prefs.mathPhysics,prefs.mathNumbering)
         if(destroyed||revision!==generation)return
-        nodes.forEach((node,index)=>{const dom=view.nodeDOM(node.pos);if(!(dom instanceof HTMLElement))return;if(node.display){const preview=dom.querySelector('.preview');if(preview)preview.innerHTML='<div class="mathjax-preview">'+html[index]+'</div>';dom.dataset.mathNumber=String(index)}else dom.innerHTML=html[index]})
+        nodes.forEach((node,index)=>{if(node.display)typeset.set(mathKey(node.source),'<div class="mathjax-preview">'+html[index]+'</div>');const dom=view.nodeDOM(node.pos);if(!(dom instanceof HTMLElement))return;if(node.display){const preview=dom.querySelector('.preview');if(preview)preview.innerHTML='<div class="mathjax-preview">'+html[index]+'</div>';dom.dataset.mathNumber=String(index)}else dom.innerHTML=html[index]})
       },30)}
       document.addEventListener('formula-preview-ready',refresh);refresh();return{update(current,previous){if(current.state.doc!==previous.doc)refresh()},destroy(){destroyed=true;clearTimeout(timer);document.removeEventListener('formula-preview-ready',refresh)}}
     },
