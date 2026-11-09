@@ -1,0 +1,9 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public localStorage preference key, not a credential"
+condition = "AND"
+paths = ['''(^|/)src/dog-companion\.ts$''']
+regexTarget = "secret"
+regexes = ['''^wuffi\.companion\.v1$''']

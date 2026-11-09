@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "wuffi",
+  "version": "1.0.0-rc.2",
+  "identifier": "app.wuffi.editor",
+  "build": {
+    "frontendDist": "../out",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": {
+      "csp": "default-src 'self' customprotocol: asset:; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost https://asset.localhost data: blob: https:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost; worker-src 'self' blob:; object-src 'none'; base-uri 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "resources": {
+      "../LICENSE": "LICENSE",
+      "../assets/policies/": "policies/",
+      "../vendor/licenses/": "licenses/",
+      "../THIRD_PARTY_NOTICES.md": "THIRD_PARTY_NOTICES.md"
+    },
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": [
+          "English",
+          "TradChinese"
+        ],
+        "displayLanguageSelector": true,
+        "startMenuFolder": "wuffi"
+      }
+    },
+    "icon": [
+      "../assets/brand/wuffi.png",
+      "../assets/brand/wuffi.ico",
+      "../assets/brand/wuffi.icns"
+    ],
+    "shortDescription": "A quiet place to write",
+    "category": "Productivity",
+    "fileAssociations": [
+      {
+        "ext": [
+          "md",
+          "markdown"
+        ],
+        "name": "Markdown",
+        "description": "Markdown document",
+        "role": "Editor"
+      }
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "wuffi",
+  "private": true,
+  "version": "1.0.0-rc.2",
+  "type": "module",
+  "description": "wuffi Markdown 桌面編輯器",
+  "author": "wuffi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gary0122g/wuffi.git"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "start": "node scripts/start-tauri.mjs --debug",
+    "build": "tsc --noEmit && vite build",
+    "desktop:build": "node scripts/build-tauri.mjs --debug",
+    "tauri:build": "node scripts/build-tauri.mjs",
+    "tauri:start": "node scripts/start-tauri.mjs",
+    "release": "tauri build --bundles nsis",
+    "test": "node --test tests/cloud-account-ui.mjs tests/tauri-source.mjs && node tests/block-matches.mjs && node tests/search-replacement.mjs && node tests/metrics.mjs",
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml --locked --bin wuffi"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/lang-markdown": "^6.5.2",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/language-data": "^6.5.2",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@fontsource/lato": "^5.3.0",
+    "@fontsource/merriweather": "^5.3.0",
+    "@fontsource/open-sans": "^5.3.0",
+    "@fontsource/pt-serif": "^5.3.0",
+    "@fontsource/vollkorn": "^5.3.0",
+    "@lezer/highlight": "^1.2.5",
+    "@milkdown/crepe": "7.22.3",
+    "@milkdown/kit": "7.22.3",
+    "dompurify": "^3.2.6",
+    "flowchart.js": "1.18.0",
+    "marked": "^16.4.0",
+    "mathjax-full": "3.2.2",
+    "mermaid": "^12.2.0",
+    "remark-frontmatter": "^5.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "^0.9.12",
+    "katex": "^0.19.0"
+  }
+}

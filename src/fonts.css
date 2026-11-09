@@ -1,0 +1,26 @@
+/* Sarasa Mono TC 1.0.42, SIL OFL 1.1. Full glyph sets, bundled for offline use. */
+@font-face {
+  font-family: 'Sarasa Mono TC';
+  src: url('./assets/sarasa/SarasaMonoTC-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sarasa Mono TC';
+  src: url('./assets/sarasa/SarasaMonoTC-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+:root { --code-font: 'Sarasa Mono TC'; }
+#source-code .cm-scroller,
+#source-editor, #split-editor,
+#milkdown-root .milkdown .ProseMirror code,
+#milkdown-root .milkdown .ProseMirror pre,
+#milkdown-root .milkdown-code-block .cm-scroller,
+.yaml-block, .reference-definition, .markdown-comment,
+.inline-source-code, .image-source-line {
+  font-family: var(--code-font, 'Sarasa Mono TC'), 'Sarasa Mono TC', monospace;
+  font-variant-ligatures: none;
+}

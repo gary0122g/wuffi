@@ -1,0 +1,6 @@
+{
+  "identifier": "main-window",
+  "description": "Local editor window; filesystem and AI access go through scoped Rust commands.",
+  "windows": ["main", "writer-*"],
+  "permissions": ["core:default", "core:window:allow-start-dragging", "opener:default"]
+}

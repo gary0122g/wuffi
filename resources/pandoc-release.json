@@ -1,0 +1,14 @@
+{
+  "version": "3.12.1",
+  "platform": "win32",
+  "arch": "x64",
+  "directory": "3.12.1-windows-x86_64",
+  "url": "https://github.com/jgm/pandoc/releases/download/3.12.1/pandoc-3.12.1-windows-x86_64.zip",
+  "bytes": 42154914,
+  "sha256": "6ef431cb20b2c24a0371fc19200dc49d452be54b1b5c9239f3462841ef53e587",
+  "files": [
+    { "name": "pandoc.exe", "entry": "pandoc-3.12.1/pandoc.exe", "bytes": 235555080, "sha256": "eb392d2661d35abc597a6288a548cc82f6291b179da28b24bc5a5d06c742d35d" },
+    { "name": "COPYING.rtf", "entry": "pandoc-3.12.1/COPYING.rtf", "bytes": 20757, "sha256": "b2e44b72220d84e7ec7d5c7ed2b76e42b2c239ae1f179a2a2a9a34d1e40f315e" },
+    { "name": "COPYRIGHT.txt", "entry": "pandoc-3.12.1/COPYRIGHT.txt", "bytes": 9823, "sha256": "43575d901fd50cc06f49042b82f114667a82c17d63b429e99635ae9430c977c4" }
+  ]
+}

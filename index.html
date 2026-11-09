@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost; worker-src 'self' blob:; object-src 'none'; base-uri 'self'" />
+  <title>wuffi</title>
+  <link rel="icon" type="image/png" href="./assets/brand/wuffi.png" />
+</head>
+<body>
+  <div id="app">
+    <div id="mobile-backdrop" class="mobile-backdrop" hidden></div>
+    <aside id="sidebar" class="sidebar" aria-label="文件導覽">
+      <div class="sidebar-switch" role="tablist" aria-label="側欄內容">
+        <button id="tab-documents" class="sidebar-tab active" role="tab" aria-selected="true">檔案</button>
+        <button id="tab-outline" class="sidebar-tab" role="tab" aria-selected="false">大綱</button>
+        <button id="sidebar-close" class="icon-button sidebar-close" aria-label="關閉側欄"></button>
+      </div>
+      <div id="documents-panel" class="sidebar-panel">
+        <label id="search-field" class="search-field" hidden><span id="search-icon"></span><input id="document-search" type="search" placeholder="搜尋" aria-label="搜尋文件" /></label>
+        <span id="document-count" hidden>0</span>
+        <div id="document-list" class="document-list" role="list"></div>
+        <div id="tree-list" class="tree-list" hidden></div>
+      </div>
+      <div id="outline-panel" class="sidebar-panel" hidden><nav id="outline-list" class="outline-list" aria-label="文件大綱"></nav></div>
+      <div class="sidebar-footer">
+        <button id="new-document" class="icon-button" title="新增文件 (Ctrl+N)" aria-label="新增文件"><span id="new-icon"></span></button>
+        <button id="folder-button" class="folder-button" title="開啟資料夾">開啟資料夾…</button>
+        <button id="sidebar-search" class="icon-button" title="搜尋" aria-label="搜尋">⌕</button>
+        <button id="sidebar-list" class="icon-button" title="側欄檢視" aria-label="側欄檢視">▤</button>
+        <div id="sidebar-view-menu" class="more-menu" hidden><button id="show-articles">文章</button><button id="show-tree">檔案樹狀目錄</button></div>
+        <button id="more-menu-button" class="icon-button" aria-label="更多選項" aria-expanded="false" title="更多選項" hidden></button>
+        <div id="more-menu" class="more-menu" hidden>
+          <button id="rename-document">另存新檔…</button>
+          <button id="duplicate-document">建立副本</button>
+          <button id="delete-document">移除草稿</button>
+          <div class="menu-divider"></div>
+          <button id="show-shortcuts">鍵盤快捷鍵</button>
+        </div>
+      </div>
+    </aside>
+    <main class="main-shell">
+      <div id="format-toolbar" class="format-toolbar" hidden><button data-format="h1">H1</button><button data-format="h2">H2</button><button data-format="bold"><b>B</b></button><button data-format="italic"><i>I</i></button><button data-format="code">&lt;/&gt;</button><button data-format="quote">❞</button><button data-format="list">☷</button></div>
+      <section class="workspace" aria-label="Markdown 編輯區">
+        <div class="document-surface">
+          <div id="visual-view" class="editor-view"><div id="milkdown-root"></div></div>
+          <div id="source-view" class="editor-view" hidden><div id="source-code"></div><textarea hidden id="source-editor" spellcheck="false" aria-label="Markdown 原始碼" placeholder=""></textarea></div>
+          <div id="split-view" class="editor-view split-view" hidden>
+            <div class="split-pane split-source"><div class="pane-heading">Markdown</div><textarea id="split-editor" spellcheck="false" aria-label="Markdown 原始碼（對照模式）"></textarea></div>
+            <div class="split-pane split-preview"><div class="pane-heading">預覽</div><div id="preview-content" class="preview-content"></div></div>
+          </div>
+        </div>
+      </section>
+      <footer class="statusbar">
+        <div class="statusbar-left">
+          <button id="sidebar-toggle" class="icon-button" aria-label="切換側欄" title="切換側欄 (Ctrl+Shift+L)"></button>
+          <button id="source-toggle" class="icon-button source-toggle" title="原始碼模式 (Ctrl+/)" aria-label="切換原始碼">&lt;/&gt;</button>
+          <span id="save-status"></span>
+        </div>
+        <button id="word-count" class="word-count" title="字數統計快顯視窗">0 字</button>
+        <div id="word-popover" class="word-popover" hidden><header>字數統計</header><dl><dd id="stat-read"></dd><dt>分鐘</dt><dd id="stat-lines"></dd><dt>行</dt><dd id="stat-words"></dd><dt>字</dt><dd id="stat-chars"></dd><dt>字元數</dt></dl></div>
+      </footer>
+    </main>
+    <div hidden aria-hidden="true">
+      <input id="document-title" /><span id="breadcrumb-title"></span><span id="updated-label"></span><span id="reading-time"></span><span id="line-count"></span>
+      <button id="download-file"></button>
+      <button id="open-file"></button>
+      <button class="mode-button" data-mode="visual"></button><button class="mode-button" data-mode="source"></button><button class="mode-button" data-mode="split"></button>
+    </div>
+    <input id="file-input" type="file" accept=".md,.markdown,.txt" hidden />
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <dialog id="shortcuts-dialog" class="shortcuts-dialog">
+      <div class="dialog-head"><h2>鍵盤快捷鍵</h2><button id="close-shortcuts" class="icon-button" aria-label="關閉"></button></div>
+      <div class="shortcut-row"><span>開啟文件</span><kbd>Ctrl + O</kbd></div>
+      <div class="shortcut-row"><span>儲存</span><kbd>Ctrl + S</kbd></div>
+      <div class="shortcut-row"><span>另存新檔</span><kbd>Ctrl + Shift + S</kbd></div>
+      <div class="shortcut-row"><span>新增文件</span><kbd>Ctrl + N</kbd></div>
+      <div class="shortcut-row"><span>原始碼模式</span><kbd>Ctrl + /</kbd></div>
+      <div class="shortcut-row"><span>切換側欄</span><kbd>Ctrl + Shift + L</kbd></div>
+      <p>選取文字可編輯格式，也可以使用上方的「段落」與「格式」選單。</p>
+    </dialog>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

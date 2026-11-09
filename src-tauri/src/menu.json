@@ -1,0 +1,1355 @@
+[
+  {
+    "label": "檔案(F)",
+    "key": "/檔案(F)",
+    "items": [
+      {
+        "label": "新增檔案",
+        "key": "/檔案(F)/新增檔案",
+        "command": "new",
+        "accelerator": "CmdOrCtrl+N",
+        "enabled": true
+      },
+      {
+        "label": "開新視窗",
+        "key": "/檔案(F)/開新視窗",
+        "command": "window:new",
+        "accelerator": "CmdOrCtrl+Shift+N",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "開啟…",
+        "key": "/檔案(F)/開啟…",
+        "command": "open",
+        "accelerator": "CmdOrCtrl+O",
+        "enabled": true
+      },
+      {
+        "label": "開啟資料夾…",
+        "key": "/檔案(F)/開啟資料夾…",
+        "command": "folder",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "快速開啟…",
+        "key": "/檔案(F)/快速開啟…",
+        "command": "quick",
+        "accelerator": "CmdOrCtrl+P",
+        "enabled": true
+      },
+      {
+        "label": "開啟最近的檔案",
+        "key": "/檔案(F)/開啟最近的檔案",
+        "items": [
+          {
+            "label": "沒有最近的檔案",
+            "key": "/檔案(F)/開啟最近的檔案/沒有最近的檔案",
+            "command": null,
+            "accelerator": "",
+            "enabled": false
+          }
+        ]
+      },
+      {
+        "label": "開啟最近的資料夾",
+        "key": "/檔案(F)/開啟最近的資料夾",
+        "items": [
+          {
+            "label": "沒有最近的資料夾",
+            "key": "/檔案(F)/開啟最近的資料夾/沒有最近的資料夾",
+            "command": null,
+            "accelerator": "",
+            "enabled": false
+          }
+        ]
+      },
+      {
+        "label": "從磁碟重新載入",
+        "key": "/檔案(F)/從磁碟重新載入",
+        "command": "reload",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "重新依選擇編碼載入檔案",
+        "key": "/檔案(F)/重新依選擇編碼載入檔案",
+        "items": [
+          {
+            "label": "UTF-8",
+            "key": "/檔案(F)/重新依選擇編碼載入檔案/UTF-8",
+            "command": "encoding:utf-8",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "UTF-16LE",
+            "key": "/檔案(F)/重新依選擇編碼載入檔案/UTF-16LE",
+            "command": "encoding:utf-16le",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "UTF-16BE",
+            "key": "/檔案(F)/重新依選擇編碼載入檔案/UTF-16BE",
+            "command": "encoding:utf-16be",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "Big5",
+            "key": "/檔案(F)/重新依選擇編碼載入檔案/Big5",
+            "command": "encoding:big5",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "GB18030",
+            "key": "/檔案(F)/重新依選擇編碼載入檔案/GB18030",
+            "command": "encoding:gb18030",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "Shift_JIS",
+            "key": "/檔案(F)/重新依選擇編碼載入檔案/Shift_JIS",
+            "command": "encoding:shift_jis",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "Windows-1252",
+            "key": "/檔案(F)/重新依選擇編碼載入檔案/Windows-1252",
+            "command": "encoding:windows-1252",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "儲存",
+        "key": "/檔案(F)/儲存",
+        "command": "save",
+        "accelerator": "CmdOrCtrl+S",
+        "enabled": true
+      },
+      {
+        "label": "另存新檔…",
+        "key": "/檔案(F)/另存新檔…",
+        "command": "saveAs",
+        "accelerator": "CmdOrCtrl+Shift+S",
+        "enabled": true
+      },
+      {
+        "label": "全部儲存…",
+        "key": "/檔案(F)/全部儲存…",
+        "command": "saveAll",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "移動至…",
+        "key": "/檔案(F)/移動至…",
+        "command": "file:move",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "屬性…",
+        "key": "/檔案(F)/屬性…",
+        "command": "properties",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "開啟檔案路徑…",
+        "key": "/檔案(F)/開啟檔案路徑…",
+        "command": "reveal",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "在側邊欄顯示",
+        "key": "/檔案(F)/在側邊欄顯示",
+        "command": "articles",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "刪除…",
+        "key": "/檔案(F)/刪除…",
+        "command": "file:trash",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "匯入…",
+        "key": "/檔案(F)/匯入…",
+        "command": "import",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "匯出",
+        "key": "/檔案(F)/匯出",
+        "items": [
+          {
+            "label": "PDF…",
+            "key": "/檔案(F)/匯出/PDF…",
+            "command": "export:pdf",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "HTML…",
+            "key": "/檔案(F)/匯出/HTML…",
+            "command": "export:html",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "Word (.docx)",
+            "key": "/檔案(F)/匯出/Word (.docx)",
+            "command": "convert:docx",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "OpenOffice",
+            "key": "/檔案(F)/匯出/OpenOffice",
+            "command": "convert:odt",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "RTF",
+            "key": "/檔案(F)/匯出/RTF",
+            "command": "convert:rtf",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "Epub",
+            "key": "/檔案(F)/匯出/Epub",
+            "command": "convert:epub",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "LaTeX",
+            "key": "/檔案(F)/匯出/LaTeX",
+            "command": "convert:tex",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "Media Wiki",
+            "key": "/檔案(F)/匯出/Media Wiki",
+            "command": "convert:wiki",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "reStructuredText",
+            "key": "/檔案(F)/匯出/reStructuredText",
+            "command": "convert:rst",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "Textile",
+            "key": "/檔案(F)/匯出/Textile",
+            "command": "convert:textile",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "OPML",
+            "key": "/檔案(F)/匯出/OPML",
+            "command": "convert:opml",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "列印…",
+        "key": "/檔案(F)/列印…",
+        "command": "export:print",
+        "accelerator": "Alt+Shift+P",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "偏好設定…",
+        "key": "/檔案(F)/偏好設定…",
+        "command": "preferences",
+        "accelerator": "CmdOrCtrl+,",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "關閉",
+        "key": "/檔案(F)/關閉",
+        "command": "app:close",
+        "accelerator": "CmdOrCtrl+W",
+        "enabled": true
+      }
+    ]
+  },
+  {
+    "label": "編輯(E)",
+    "key": "/編輯(E)",
+    "items": [
+      {
+        "label": "還原",
+        "key": "/編輯(E)/還原",
+        "command": "edit:undo",
+        "accelerator": "CmdOrCtrl+Z",
+        "enabled": true
+      },
+      {
+        "label": "重做",
+        "key": "/編輯(E)/重做",
+        "command": "edit:redo",
+        "accelerator": "CmdOrCtrl+Y",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "剪下",
+        "key": "/編輯(E)/剪下",
+        "command": "native:cut",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "複製",
+        "key": "/編輯(E)/複製",
+        "command": "native:copy",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "貼上",
+        "key": "/編輯(E)/貼上",
+        "command": "native:paste",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "複製為純文字",
+        "key": "/編輯(E)/複製為純文字",
+        "command": "edit:copy:plain",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "複製為 Markdown",
+        "key": "/編輯(E)/複製為 Markdown",
+        "command": "edit:copy:markdown",
+        "accelerator": "CmdOrCtrl+Shift+C",
+        "enabled": true
+      },
+      {
+        "label": "複製為 HTML",
+        "key": "/編輯(E)/複製為 HTML",
+        "command": "edit:copy:html",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "以純文字貼上",
+        "key": "/編輯(E)/以純文字貼上",
+        "command": "edit:paste:plain",
+        "accelerator": "CmdOrCtrl+Shift+V",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "選擇",
+        "key": "/編輯(E)/選擇",
+        "items": [
+          {
+            "label": "全選",
+            "key": "/編輯(E)/選擇/全選",
+            "command": "edit:all",
+            "accelerator": "CmdOrCtrl+A",
+            "enabled": true
+          },
+          {
+            "label": "選擇段落或區塊",
+            "key": "/編輯(E)/選擇/選擇段落或區塊",
+            "command": "edit:block",
+            "accelerator": "Alt+CmdOrCtrl+P",
+            "enabled": true
+          },
+          {
+            "label": "選擇行 / 句子",
+            "key": "/編輯(E)/選擇/選擇行 / 句子",
+            "command": "edit:line",
+            "accelerator": "CmdOrCtrl+L",
+            "enabled": true
+          },
+          {
+            "label": "選擇具格式化的段落",
+            "key": "/編輯(E)/選擇/選擇具格式化的段落",
+            "command": "edit:formatted",
+            "accelerator": "CmdOrCtrl+E",
+            "enabled": true
+          },
+          {
+            "label": "選擇單字",
+            "key": "/編輯(E)/選擇/選擇單字",
+            "command": "edit:word",
+            "accelerator": "CmdOrCtrl+D",
+            "enabled": true
+          },
+          {
+            "separator": true
+          },
+          {
+            "label": "跳到最上方",
+            "key": "/編輯(E)/選擇/跳到最上方",
+            "command": "edit:top",
+            "accelerator": "CmdOrCtrl+Home",
+            "enabled": true
+          },
+          {
+            "label": "跳到所選處",
+            "key": "/編輯(E)/選擇/跳到所選處",
+            "command": "edit:selection",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "跳到最下方",
+            "key": "/編輯(E)/選擇/跳到最下方",
+            "command": "edit:bottom",
+            "accelerator": "CmdOrCtrl+End",
+            "enabled": true
+          },
+          {
+            "separator": true
+          },
+          {
+            "label": "跳至行首",
+            "key": "/編輯(E)/選擇/跳至行首",
+            "command": "edit:lineStart",
+            "accelerator": "Home",
+            "enabled": true
+          },
+          {
+            "label": "跳至行尾",
+            "key": "/編輯(E)/選擇/跳至行尾",
+            "command": "edit:lineEnd",
+            "accelerator": "End",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "上移此列",
+        "key": "/編輯(E)/上移此列",
+        "command": "edit:up",
+        "accelerator": "Alt+Up",
+        "enabled": true
+      },
+      {
+        "label": "下移此列",
+        "key": "/編輯(E)/下移此列",
+        "command": "edit:down",
+        "accelerator": "Alt+Down",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "刪除",
+        "key": "/編輯(E)/刪除",
+        "command": "edit:delete",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "刪除區段",
+        "key": "/編輯(E)/刪除區段",
+        "items": [
+          {
+            "label": "刪除此段落或區塊",
+            "key": "/編輯(E)/刪除區段/刪除此段落或區塊",
+            "command": "edit:deleteBlock",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "智慧型標點符號",
+        "key": "/編輯(E)/智慧型標點符號",
+        "items": [
+          {
+            "label": "轉換引號",
+            "key": "/編輯(E)/智慧型標點符號/轉換引號",
+            "command": "edit:smartQuotes",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "轉換破折號",
+            "key": "/編輯(E)/智慧型標點符號/轉換破折號",
+            "command": "edit:smartDashes",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "轉換刪節號",
+            "key": "/編輯(E)/智慧型標點符號/轉換刪節號",
+            "command": "edit:smartEllipses",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "行結尾",
+        "key": "/編輯(E)/行結尾",
+        "items": [
+          {
+            "label": "CRLF",
+            "key": "/編輯(E)/行結尾/CRLF",
+            "command": "lineEnding:crlf",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "LF",
+            "key": "/編輯(E)/行結尾/LF",
+            "command": "lineEnding:lf",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "空格和換行符號",
+        "key": "/編輯(E)/空格和換行符號",
+        "items": [
+          {
+            "label": "移除行末空白",
+            "key": "/編輯(E)/空格和換行符號/移除行末空白",
+            "command": "edit:trim",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "拼字檢查…",
+        "key": "/編輯(E)/拼字檢查…",
+        "command": "preferences:editor",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "尋找與取代",
+        "key": "/編輯(E)/尋找與取代",
+        "items": [
+          {
+            "label": "尋找…",
+            "key": "/編輯(E)/尋找與取代/尋找…",
+            "command": "find",
+            "accelerator": "CmdOrCtrl+F",
+            "enabled": true
+          },
+          {
+            "label": "取代…",
+            "key": "/編輯(E)/尋找與取代/取代…",
+            "command": "replace",
+            "accelerator": "CmdOrCtrl+H",
+            "enabled": true
+          },
+          {
+            "label": "尋找下一個",
+            "key": "/編輯(E)/尋找與取代/尋找下一個",
+            "command": "findNext",
+            "accelerator": "F3",
+            "enabled": true
+          },
+          {
+            "label": "尋找上一個",
+            "key": "/編輯(E)/尋找與取代/尋找上一個",
+            "command": "findPrevious",
+            "accelerator": "Shift+F3",
+            "enabled": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "段落(P)",
+    "key": "/段落(P)",
+    "items": [
+      {
+        "label": "一級標題",
+        "key": "/段落(P)/一級標題",
+        "command": "format:h1",
+        "accelerator": "CmdOrCtrl+1",
+        "enabled": true
+      },
+      {
+        "label": "二級標題",
+        "key": "/段落(P)/二級標題",
+        "command": "format:h2",
+        "accelerator": "CmdOrCtrl+2",
+        "enabled": true
+      },
+      {
+        "label": "三級標題",
+        "key": "/段落(P)/三級標題",
+        "command": "format:h3",
+        "accelerator": "CmdOrCtrl+3",
+        "enabled": true
+      },
+      {
+        "label": "四級標題",
+        "key": "/段落(P)/四級標題",
+        "command": "format:h4",
+        "accelerator": "CmdOrCtrl+4",
+        "enabled": true
+      },
+      {
+        "label": "五級標題",
+        "key": "/段落(P)/五級標題",
+        "command": "format:h5",
+        "accelerator": "CmdOrCtrl+5",
+        "enabled": true
+      },
+      {
+        "label": "六級標題",
+        "key": "/段落(P)/六級標題",
+        "command": "format:h6",
+        "accelerator": "CmdOrCtrl+6",
+        "enabled": true
+      },
+      {
+        "label": "段落",
+        "key": "/段落(P)/段落",
+        "command": "format:paragraph",
+        "accelerator": "CmdOrCtrl+0",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "增加標題層級",
+        "key": "/段落(P)/增加標題層級",
+        "command": "edit:headingUp",
+        "accelerator": "CmdOrCtrl+=",
+        "enabled": true
+      },
+      {
+        "label": "降低標題層級",
+        "key": "/段落(P)/降低標題層級",
+        "command": "edit:headingDown",
+        "accelerator": "CmdOrCtrl+-",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "表格",
+        "key": "/段落(P)/表格",
+        "items": [
+          {
+            "label": "插入表格…",
+            "key": "/段落(P)/表格/插入表格…",
+            "command": "insert:table",
+            "accelerator": "CmdOrCtrl+T",
+            "enabled": true
+          },
+          {
+            "separator": true
+          },
+          {
+            "label": "上方插入列",
+            "key": "/段落(P)/表格/上方插入列",
+            "command": "edit:table:rowBefore",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "下方插入列",
+            "key": "/段落(P)/表格/下方插入列",
+            "command": "edit:table:rowAfter",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "左側插入欄",
+            "key": "/段落(P)/表格/左側插入欄",
+            "command": "edit:table:colBefore",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "右側插入欄",
+            "key": "/段落(P)/表格/右側插入欄",
+            "command": "edit:table:colAfter",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "刪除列",
+            "key": "/段落(P)/表格/刪除列",
+            "command": "edit:table:deleteRow",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "刪除欄",
+            "key": "/段落(P)/表格/刪除欄",
+            "command": "edit:table:deleteColumn",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "刪除表格",
+            "key": "/段落(P)/表格/刪除表格",
+            "command": "edit:table:deleteTable",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "公式區塊",
+        "key": "/段落(P)/公式區塊",
+        "command": "insert:math",
+        "accelerator": "CmdOrCtrl+Shift+M",
+        "enabled": true
+      },
+      {
+        "label": "程式碼區塊",
+        "key": "/段落(P)/程式碼區塊",
+        "command": "insert:codeblock",
+        "accelerator": "CmdOrCtrl+Shift+K",
+        "enabled": true
+      },
+      {
+        "label": "程式碼工具",
+        "key": "/段落(P)/程式碼工具",
+        "items": [
+          {
+            "label": "Mermaid 圖表",
+            "key": "/段落(P)/程式碼工具/Mermaid 圖表",
+            "command": "insert:mermaid",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "流程圖",
+            "key": "/段落(P)/程式碼工具/流程圖",
+            "command": "insert:flow",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "序列圖",
+            "key": "/段落(P)/程式碼工具/序列圖",
+            "command": "insert:sequence",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "複製程式碼",
+            "key": "/段落(P)/程式碼工具/複製程式碼",
+            "command": "edit:copy:code",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "提醒",
+        "key": "/段落(P)/提醒",
+        "items": [
+          {
+            "label": "NOTE",
+            "key": "/段落(P)/提醒/NOTE",
+            "command": "alert:NOTE",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "TIP",
+            "key": "/段落(P)/提醒/TIP",
+            "command": "alert:TIP",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "IMPORTANT",
+            "key": "/段落(P)/提醒/IMPORTANT",
+            "command": "alert:IMPORTANT",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "WARNING",
+            "key": "/段落(P)/提醒/WARNING",
+            "command": "alert:WARNING",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "CAUTION",
+            "key": "/段落(P)/提醒/CAUTION",
+            "command": "alert:CAUTION",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "引言",
+        "key": "/段落(P)/引言",
+        "command": "format:quote",
+        "accelerator": "CmdOrCtrl+Shift+Q",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "有次序清單",
+        "key": "/段落(P)/有次序清單",
+        "command": "format:ordered",
+        "accelerator": "CmdOrCtrl+Shift+[",
+        "enabled": true
+      },
+      {
+        "label": "無次序清單",
+        "key": "/段落(P)/無次序清單",
+        "command": "format:list",
+        "accelerator": "CmdOrCtrl+Shift+]",
+        "enabled": true
+      },
+      {
+        "label": "工作清單",
+        "key": "/段落(P)/工作清單",
+        "command": "insert:task",
+        "accelerator": "CmdOrCtrl+Shift+X",
+        "enabled": true
+      },
+      {
+        "label": "工作狀態",
+        "key": "/段落(P)/工作狀態",
+        "items": [
+          {
+            "label": "切換完成狀態",
+            "key": "/段落(P)/工作狀態/切換完成狀態",
+            "command": "edit:taskToggle",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "label": "清單縮排",
+        "key": "/段落(P)/清單縮排",
+        "items": [
+          {
+            "label": "增加縮排",
+            "key": "/段落(P)/清單縮排/增加縮排",
+            "command": "edit:indent",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "減少縮排",
+            "key": "/段落(P)/清單縮排/減少縮排",
+            "command": "edit:outdent",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "上方插入段落",
+        "key": "/段落(P)/上方插入段落",
+        "command": "edit:paragraphAbove",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "下方插入段落",
+        "key": "/段落(P)/下方插入段落",
+        "command": "edit:paragraphBelow",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "水平線",
+        "key": "/段落(P)/水平線",
+        "command": "insert:rule",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "參照連結",
+        "key": "/段落(P)/參照連結",
+        "command": "insert:reference",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "註腳",
+        "key": "/段落(P)/註腳",
+        "command": "insert:footnote",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "目錄",
+        "key": "/段落(P)/目錄",
+        "command": "insert:toc",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "YAML Front Matter",
+        "key": "/段落(P)/YAML Front Matter",
+        "command": "frontmatter",
+        "accelerator": "",
+        "enabled": true
+      }
+    ]
+  },
+  {
+    "label": "格式(O)",
+    "key": "/格式(O)",
+    "items": [
+      {
+        "label": "粗體",
+        "key": "/格式(O)/粗體",
+        "command": "format:bold",
+        "accelerator": "CmdOrCtrl+B",
+        "enabled": true
+      },
+      {
+        "label": "斜體",
+        "key": "/格式(O)/斜體",
+        "command": "format:italic",
+        "accelerator": "CmdOrCtrl+I",
+        "enabled": true
+      },
+      {
+        "label": "底線",
+        "key": "/格式(O)/底線",
+        "command": "format:underline",
+        "accelerator": "CmdOrCtrl+U",
+        "enabled": true
+      },
+      {
+        "label": "程式碼",
+        "key": "/格式(O)/程式碼",
+        "command": "format:code",
+        "accelerator": "CmdOrCtrl+Shift+`",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "刪除線",
+        "key": "/格式(O)/刪除線",
+        "command": "format:strike",
+        "accelerator": "Alt+Shift+5",
+        "enabled": true
+      },
+      {
+        "label": "上標",
+        "key": "/格式(O)/上標",
+        "command": "format:sup",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "下標",
+        "key": "/格式(O)/下標",
+        "command": "format:sub",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "醒目提示",
+        "key": "/格式(O)/醒目提示",
+        "command": "format:highlight",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "行內公式",
+        "key": "/格式(O)/行內公式",
+        "command": "insert:inlineMath",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "註解",
+        "key": "/格式(O)/註解",
+        "command": "insert:comment",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "超連結",
+        "key": "/格式(O)/超連結",
+        "command": "link",
+        "accelerator": "CmdOrCtrl+K",
+        "enabled": true
+      },
+      {
+        "label": "圖片",
+        "key": "/格式(O)/圖片",
+        "items": [
+          {
+            "label": "插入圖片…",
+            "key": "/格式(O)/圖片/插入圖片…",
+            "command": "image",
+            "accelerator": "CmdOrCtrl+Shift+I",
+            "enabled": true
+          },
+          {
+            "label": "插入本機圖片…",
+            "key": "/格式(O)/圖片/插入本機圖片…",
+            "command": "image:local",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "上傳圖片…",
+            "key": "/格式(O)/圖片/上傳圖片…",
+            "command": "image:upload",
+            "accelerator": "",
+            "enabled": true
+          },
+          {
+            "label": "圖片上傳設定…",
+            "key": "/格式(O)/圖片/圖片上傳設定…",
+            "command": "settings:upload",
+            "accelerator": "",
+            "enabled": true
+          }
+        ]
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "清除格式",
+        "key": "/格式(O)/清除格式",
+        "command": "format:clear",
+        "accelerator": "CmdOrCtrl+\\",
+        "enabled": true
+      }
+    ]
+  },
+  {
+    "label": "檢視(V)",
+    "key": "/檢視(V)",
+    "items": [
+      {
+        "label": "顯示/隱藏側邊欄",
+        "key": "/檢視(V)/顯示/隱藏側邊欄",
+        "command": "sidebar",
+        "accelerator": "CmdOrCtrl+Shift+L",
+        "enabled": true
+      },
+      {
+        "label": "大綱",
+        "key": "/檢視(V)/大綱",
+        "command": "outline",
+        "accelerator": "CmdOrCtrl+Shift+1",
+        "enabled": true
+      },
+      {
+        "label": "文章",
+        "key": "/檢視(V)/文章",
+        "command": "articles",
+        "accelerator": "CmdOrCtrl+Shift+2",
+        "enabled": true
+      },
+      {
+        "label": "檔案樹狀目錄",
+        "key": "/檢視(V)/檔案樹狀目錄",
+        "command": "tree",
+        "accelerator": "CmdOrCtrl+Shift+3",
+        "enabled": true
+      },
+      {
+        "label": "搜尋",
+        "key": "/檢視(V)/搜尋",
+        "command": "search",
+        "accelerator": "CmdOrCtrl+Shift+F",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "原始碼模式",
+        "key": "/檢視(V)/原始碼模式",
+        "command": "source",
+        "accelerator": "CmdOrCtrl+/",
+        "enabled": true
+      },
+      {
+        "label": "唯讀模式",
+        "key": "/檢視(V)/唯讀模式",
+        "command": "readonly",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "專注模式",
+        "key": "/檢視(V)/專注模式",
+        "command": "focus",
+        "accelerator": "F8",
+        "enabled": true
+      },
+      {
+        "label": "打字機模式",
+        "key": "/檢視(V)/打字機模式",
+        "command": "typewriter",
+        "accelerator": "F9",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "狀態列",
+        "key": "/檢視(V)/狀態列",
+        "command": "status",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "工具列",
+        "key": "/檢視(V)/工具列",
+        "command": "toolbar",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "字數統計快顯視窗",
+        "key": "/檢視(V)/字數統計快顯視窗",
+        "command": "words",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "切換全螢幕",
+        "key": "/檢視(V)/切換全螢幕",
+        "command": "fullscreen",
+        "accelerator": "F11",
+        "enabled": true
+      },
+      {
+        "label": "一律在最上層",
+        "key": "/檢視(V)/一律在最上層",
+        "command": "alwaysOnTop",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "實際尺寸",
+        "key": "/檢視(V)/實際尺寸",
+        "command": "zoom:reset",
+        "accelerator": "CmdOrCtrl+Shift+9",
+        "enabled": true
+      },
+      {
+        "label": "放大",
+        "key": "/檢視(V)/放大",
+        "command": "zoom:in",
+        "accelerator": "CmdOrCtrl+Shift+=",
+        "enabled": true
+      },
+      {
+        "label": "縮小",
+        "key": "/檢視(V)/縮小",
+        "command": "zoom:out",
+        "accelerator": "CmdOrCtrl+Shift+-",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "在已開啟的文件間切換",
+        "key": "/檢視(V)/在已開啟的文件間切換",
+        "command": "nextDocument",
+        "accelerator": "Ctrl+Tab",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "開啟/關閉開發者工具",
+        "key": "/檢視(V)/開啟/關閉開發者工具",
+        "command": "devtools",
+        "accelerator": "Shift+F12",
+        "enabled": true
+      },
+      {
+        "label": "一起寫",
+        "key": "/檢視(V)/一起寫",
+        "command": "agent",
+        "accelerator": "CmdOrCtrl+J",
+        "enabled": true
+      }
+    ]
+  },
+  {
+    "label": "主題(T)",
+    "key": "/主題(T)",
+    "items": [
+      {
+        "label": "Github",
+        "key": "/主題(T)/Github",
+        "command": "theme:light",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "Newsprint",
+        "key": "/主題(T)/Newsprint",
+        "command": "theme:newsprint",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "Night",
+        "key": "/主題(T)/Night",
+        "command": "theme:night",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "Pixyll",
+        "key": "/主題(T)/Pixyll",
+        "command": "theme:pixyll",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "Whitey",
+        "key": "/主題(T)/Whitey",
+        "command": "theme:whitey",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "Liquid Glass",
+        "key": "/主題(T)/Liquid Glass",
+        "command": "theme:glass",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "separator": true
+      },
+      {
+        "label": "自訂主題…",
+        "key": "/主題(T)/自訂主題…",
+        "command": "settings:themes",
+        "accelerator": "",
+        "enabled": true
+      }
+    ]
+  },
+  {
+    "label": "說明(H)",
+    "key": "/說明(H)",
+    "items": [
+      {
+        "label": "鍵盤快捷鍵",
+        "key": "/說明(H)/鍵盤快捷鍵",
+        "command": "shortcuts",
+        "accelerator": "",
+        "enabled": true
+      },
+      {
+        "label": "關於 wuffi",
+        "key": "/說明(H)/關於 wuffi",
+        "command": "about",
+        "accelerator": "",
+        "enabled": true
+      }
+    ]
+  }
+]

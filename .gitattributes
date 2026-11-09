@@ -1,0 +1,24 @@
+* text=auto
+*.ts text eol=lf
+*.js text eol=lf
+*.cjs text eol=lf
+*.mjs text eol=lf
+*.css text eol=lf
+*.svg text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.cmd text eol=crlf
+*.sh text eol=lf
+*.woff2 binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.icns binary
+*.rtf binary
+# Keep upstream license text verbatim, including its original spacing.
+vendor/licenses/* -whitespace
+# Preserve the AI prompt text byte-for-byte, including its final space.
+src-tauri/src/agent-system.txt text eol=lf -whitespace

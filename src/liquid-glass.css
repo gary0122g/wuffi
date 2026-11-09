@@ -1,0 +1,67 @@
+/* Original interpretation of the public letschips Liquid Glass workspace previews. */
+body[data-theme=glass] {
+  --paper:#edf3f5; --side:#e5edf2; --ink:#304350; --line:#cbd9e0; --muted:#697e8c; --hover:#dde9ef;
+  --source-heading:#6873a0; --source-quote:#718982; --source-link:#557fa8; --source-code:#647a96;
+  background:#dce9ec;
+  background-image:radial-gradient(ellipse at 12% 14%,#d6e6f3 0,transparent 52%),radial-gradient(ellipse at 88% 5%,#ede4f1 0,transparent 46%),radial-gradient(ellipse at 88% 90%,#f2e6d6 0,transparent 45%),linear-gradient(150deg,#e3edf0,#c9dedf 70%,#e4e9e1);
+  background-attachment:fixed;
+}
+body[data-theme=glass] #app,
+body[data-theme=glass] .workspace,
+body[data-theme=glass] #milkdown-root .milkdown { background:transparent; }
+body[data-theme=glass] #milkdown-root .milkdown .editor {
+  background:rgba(251,253,255,.71);
+  backdrop-filter:blur(24px) saturate(120%);
+  border-radius:22px;
+  outline:1px solid rgba(255,255,255,.76);
+  outline-offset:-1px;
+  box-shadow:0 18px 60px #35516a0c,inset 0 1px 0 #ffffffd9;
+}
+body[data-theme=glass] .desktop-chrome { background:rgba(242,248,250,.65); }
+body[data-theme=glass] .sidebar,
+body[data-theme=glass] #writing-agent {
+  background:rgba(240,247,251,.69);
+  backdrop-filter:blur(28px) saturate(135%);
+  border-color:#ffffffab;
+  box-shadow:-12px 0 48px #304a6210,inset 1px 0 0 #ffffffb3;
+}
+body[data-theme=glass] #writing-agent>header,
+body[data-theme=glass] .agent-composer { background:rgba(255,255,255,.22);border-color:#ffffffa3; }
+body[data-theme=glass] .agent-entry {
+  background:transparent;border:0;box-shadow:none;
+}
+body[data-theme=glass] .agent-entry:hover { background:transparent; }
+body[data-theme=glass] .agent-proposal {
+  border-color:#b0c7d1;
+}
+body[data-theme=glass] #writing-agent button { border-color:#c6d5df99;background:rgba(255,255,255,.32); }
+body[data-theme=glass] #writing-agent button:hover:not(:disabled) { background:rgba(255,255,255,.8); }
+body[data-theme=glass] .agent-proposal .proposed-text { border-color:#8dabb3; }
+body[data-theme=glass] .agent-composer textarea:focus-visible { outline:1px solid #98b2c5;outline-offset:1px;border-radius:18px; }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror :is(h1,h2) { border-color:#c8d7df80; }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror :is(h1,h2,h3,h4,h5,h6) { color:#2c4355; }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror blockquote { color:#637b89;border-color:#a8beca; }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror a,
+body[data-theme=glass] .preview-content a { color:#527c9e; }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror :is(td,th) { border-color:#c7d7e080; }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror th { background:rgba(222,232,244,.68); }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror table tr:nth-child(odd) { background:rgba(235,243,247,.6); }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror table tr:nth-child(even) { background:rgba(255,255,255,.42); }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror :not(pre)>code { background:#e5e9f280;color:#616d94; }
+body[data-theme=glass] #milkdown-root .milkdown .milkdown-code-block { background:rgba(235,243,248,.65);outline:1px solid #ffffffb3;outline-offset:-1px;border-radius:12px; }
+body[data-theme=glass] #milkdown-root .milkdown .ProseMirror hr { background-color:#c5d6df;border-color:#c5d6df; }
+body[data-theme=glass] #source-code .cm-editor,
+body[data-theme=glass] #split-view,
+body[data-theme=glass] #split-editor { background:rgba(251,253,255,.71); }
+body[data-theme=glass] #source-code .cm-activeLine,
+body[data-theme=glass] #source-code .cm-activeLineGutter { background:#dce9f266; }
+body[data-theme=glass] #source-code .cm-cursor { border-left-color:#66879e; }
+body[data-theme=glass] .ProseMirror ::selection { background:#aacbdd66; }
+body[data-theme=glass] :is(#preferences,.utility-dialog) { background:rgba(244,249,252,.96); }
+body[data-theme=glass] .utility-dialog { backdrop-filter:blur(24px); }
+@media(prefers-reduced-transparency:reduce){
+  body[data-theme=glass] #milkdown-root .milkdown .editor,
+  body[data-theme=glass] #writing-agent,
+  body[data-theme=glass] .sidebar { background:#f4f8fa;backdrop-filter:none; }
+  body[data-theme=glass] .agent-entry { background:transparent; }
+}

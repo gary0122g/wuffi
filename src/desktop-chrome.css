@@ -1,0 +1,67 @@
+.desktop-chrome { flex:none; color:#333; background:#fafafa; font:13px/1 'Segoe UI',sans-serif; user-select:none; }
+body.night .desktop-chrome { color:#d4d4d4; background:#1b1b1b; }
+.chrome-titlebar { height:32px; position:relative; -webkit-app-region:drag; }
+.desktop-chrome button { -webkit-app-region:no-drag; display:inline-flex; align-items:center; justify-content:center; border:0; border-radius:3px; background:transparent; color:inherit; cursor:default; flex:none; }
+.desktop-chrome button:hover,.desktop-chrome button[aria-expanded=true] { background:rgba(128,128,128,.16); }
+.desktop-chrome button:active { background:rgba(128,128,128,.25); }
+.desktop-chrome button:focus-visible { outline:2px solid #659bd4; outline-offset:-3px; }
+.chrome-sidebar { position:absolute; inset:0 auto 0 4px; width:36px; height:32px; cursor:pointer!important; color:var(--muted)!important; opacity:.7; }
+.chrome-sidebar:hover,.chrome-sidebar[aria-expanded=true],.chrome-sidebar:focus-visible { opacity:1; }
+#seamless-document-title { display:block; position:absolute; left:150px; right:150px; top:0; height:32px; line-height:32px; font-size:12px; font-weight:600; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; }
+.chrome-menubar { height:36px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; gap:8px; }
+.chrome-menubar nav { display:flex; align-items:center; gap:2px; min-width:0; }
+.chrome-menubar nav button { height:30px; padding:0 10px; font-size:14px; white-space:nowrap; }
+.chrome-actions { display:flex; gap:4px; align-items:center; }
+.chrome-language { height:28px; min-width:30px; font-size:11px; opacity:.75; }
+.chrome-preview { height:30px; width:34px; }
+.chrome-preview[aria-pressed=true] { background:rgba(128,128,128,.18); }
+body.seamless #app { height:calc(100vh - 68px); }
+@media(max-width:700px){.chrome-menubar nav{gap:0}.chrome-menubar nav button{padding:0 7px;font-size:13px}}
+
+.source-toggle { white-space:nowrap; min-width:32px; flex-shrink:0; }
+body.night .document-item-date { color:#a2a8ae; }
+body.night .document-item { border-color:#484d52; }
+body.night { color-scheme:dark; }
+/* Writing chrome: retain the native titlebar and reveal menus at the top edge. */
+body.chrome-collapsed .chrome-menubar { display:none; }
+body.seamless.chrome-collapsed #app { height:calc(100vh - 32px); }
+/* Keep settings outside the AI popover and clear of native caption buttons. */
+.writing-settings { position:fixed; top:2px; right:12px; z-index:47; width:28px; height:28px; padding:5px; display:grid; place-items:center; border:0; border-radius:7px; background:transparent; color:var(--muted); cursor:pointer; -webkit-app-region:no-drag; opacity:.8; transition:opacity 140ms ease,background-color 140ms ease; }
+body.seamless .writing-settings { right:calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, calc(100vw - 138px)) + 6px); }
+.writing-settings:hover,.writing-settings[aria-expanded=true] { opacity:1; background:color-mix(in srgb,var(--ink) 8%,transparent); }
+.writing-settings:focus-visible { outline:2px solid #659bd4; outline-offset:-2px; opacity:1; }
+body.chrome-collapsed .writing-settings { opacity:0; pointer-events:none; }
+body.chrome-collapsed .writing-settings:focus-visible { opacity:1; pointer-events:auto; }
+@media(prefers-reduced-motion:reduce){.writing-settings{transition:none}}
+@media print{.writing-settings{display:none}}
+/* Settings typography is independent of document typography and theme fonts. */
+body[data-theme] #preferences { font:14px/1.5 'Segoe UI','Microsoft JhengHei',sans-serif; padding-top:48px; }
+#preferences .preferences-header { height:48px; padding-left:12px; }
+/* The native caption buttons occupy the top 32px of a seamless window. */
+body.seamless #preferences { top:env(titlebar-area-height, 32px); }
+body.seamless #preferences .preferences-header { top:env(titlebar-area-height, 32px); }
+#preferences .preferences-layout { max-width:1440px; margin:24px auto; padding:0 24px; grid-template-columns:140px minmax(250px,1fr) 300px; grid-template-areas:'nav content preview'; gap:28px; align-items:start; }
+#preferences .preferences-layout>nav { grid-area:nav; position:sticky; top:72px; }
+#preferences .preferences-content { grid-area:content; min-width:0; }
+body[data-theme] #preferences .preferences-content h1 { text-align:left; font:600 22px/1.3 'Segoe UI','Microsoft JhengHei',sans-serif; margin:0 0 24px; }
+#preferences .preference-row { grid-template-columns:1fr; gap:10px; margin:0; padding:18px 0; border-bottom:1px solid var(--line); }
+#preferences .preference-row:first-of-type { padding-top:0; }
+#preferences .preference-row h2 { font-size:14px; line-height:1.5; }
+#preferences .preference-row p { line-height:1.5; margin:4px 0 0; }
+#preferences .preference-controls { padding:0; display:grid; gap:10px; }
+#preferences .preference-controls label { margin:0; gap:10px; line-height:1.5; align-items:center; min-width:0; }
+#preferences .preference-controls :is(input,select,button) { font:inherit; line-height:1.4; }
+#preferences .preference-controls :is(input:not([type=checkbox]),select,button) { min-height:32px; border-radius:4px; }
+#preferences .preference-controls input[type=text] { width:220px; min-width:0; }
+#preferences .preferences-tabs button { min-height:34px; height:auto; padding:7px 10px; line-height:1.4; }
+.preferences-preview { grid-area:preview; position:sticky; top:72px; padding:16px; border:1px solid var(--line); border-radius:8px; background:var(--paper); min-width:0; }
+.preferences-preview>h2 { font:600 12px/1.4 'Segoe UI',sans-serif; margin:0 0 14px; color:var(--muted); }
+.preview-paper { color:var(--ink); overflow-wrap:anywhere; }
+.preview-paper h3 { font-size:1.25em; line-height:1.35; margin:0 0 12px; }
+.preview-paper p { margin:0 0 14px; line-height:inherit; }
+.preview-paper pre { padding:10px; background:var(--side); white-space:pre-wrap; font-family:var(--code-font),monospace; line-height:inherit; font-size:.85em; border-radius:4px; }
+.preferences-preview small { display:block; font:12px/1.5 'Segoe UI','Microsoft JhengHei',sans-serif; color:var(--muted); margin-top:14px; }
+@media(max-width:1100px){#preferences .preferences-layout{grid-template-columns:130px minmax(0,1fr);grid-template-areas:'nav preview' 'nav content';gap:24px;margin:20px auto}.preferences-preview{top:48px;z-index:1;padding:14px}.preview-paper h3{margin-bottom:6px}.preview-paper p{margin-bottom:8px}.preview-paper pre{margin:0}.preferences-preview small{margin-top:8px}}
+@media(max-width:650px){#preferences .preferences-layout{padding:0 12px;grid-template-columns:100px minmax(0,1fr);gap:16px}.preferences-preview{padding:10px}#preferences .preference-controls label{flex-wrap:wrap}#preferences .preference-controls input[type=text]{width:100%}}
+.preferences-preview { max-height:calc(100vh - 100px); overflow:auto; scrollbar-width:thin; }
+@media(max-width:1100px){.preferences-preview{max-height:38vh}}

@@ -1,0 +1,7 @@
+/* Tauri provides the native window frame; the shared editor keeps its layout. */
+body[data-runtime=tauri] .tauri-window-controls { position:fixed;top:0;right:0;z-index:110;display:flex;height:32px;background:var(--paper);color:var(--ink);user-select:none; }
+body[data-runtime=tauri] .tauri-window-controls button { width:46px;height:32px;border:0;border-radius:0;padding:0;display:grid;place-items:center;background:transparent;color:inherit;font:18px/1 'Segoe UI',sans-serif; }
+body[data-runtime=tauri] .tauri-window-controls button:hover { background:color-mix(in srgb,var(--ink) 10%,transparent); }
+body[data-runtime=tauri] .tauri-window-controls button:last-child:hover { background:#c42b1c;color:white; }
+body[data-runtime=tauri] .tauri-window-controls button:focus-visible { outline:2px solid #659bd4;outline-offset:-3px; }
+@media print{body[data-runtime=tauri] .tauri-window-controls{display:none}}

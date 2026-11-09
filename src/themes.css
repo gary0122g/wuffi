@@ -1,0 +1,33 @@
+/* Built-in themes change colors only. Document geometry lives in styles.css. */
+body[data-theme=newsprint] { --paper:#f3f2ee; --side:#f3f2ee; --ink:#1f0909; }
+body[data-theme=pixyll] { --paper:#fff; --ink:#333; }
+body[data-theme=whitey] { --paper:#fefefe; --ink:#333; }
+body[data-theme=night] { --paper:#363b40; --side:#2e3033; --ink:#b8bfc6; --line:#555; --hover:#444a50; --muted:#999; }
+body[data-theme=night] #milkdown-root .milkdown .ProseMirror :is(h1,h2,h3,h4,h5,h6) { border-color:#555; color:#dedede; }
+body[data-theme=night] #milkdown-root .milkdown .ProseMirror :is(strong,th) { color:#dedede; }
+body[data-theme=night] #milkdown-root .milkdown .ProseMirror :is(td,th) { border-color:#474d54; }
+body[data-theme=night] #milkdown-root .milkdown .ProseMirror blockquote { border-color:#474d54; color:#9da2a6; }
+body[data-theme=night] #milkdown-root .milkdown .ProseMirror .label-wrapper { color:inherit; }
+body[data-theme=night] #milkdown-root .milkdown .ProseMirror table tr:nth-child(even) { background:transparent; }
+body[data-theme=night] #milkdown-root .milkdown .ProseMirror :is(th,table tr:nth-child(odd),pre) { background:#333; }
+body[data-theme=newsprint] #milkdown-root .milkdown .ProseMirror :is(table tr:first-child,th) { background:#dadada; }
+body[data-theme=newsprint] #milkdown-root .milkdown .ProseMirror table tr:nth-child(even) { background:#e8e7e7; }
+body[data-theme=newsprint] #milkdown-root .milkdown .ProseMirror table tr:nth-child(odd):not(:first-child) { background:transparent; }
+body:is([data-theme=pixyll],[data-theme=whitey]) #milkdown-root .milkdown .ProseMirror :is(table tr,th) { background:transparent; }
+body[data-theme=night] .statusbar { background:#42474d; border-top-color:#555; }
+body[data-theme=night] .statusbar :is(button,.word-count) { color:#aaa; }
+
+/* User typography applies equally to every built-in palette. */
+body[data-theme] #milkdown-root .milkdown .ProseMirror,
+body[data-theme] #milkdown-root .milkdown .ProseMirror :is(p,li,table) { font-size:var(--editor-size,16px); line-height:var(--editor-line-height,1.6); }
+body[data-theme] #milkdown-root .milkdown .ProseMirror :is(td,th) p { margin:0; padding:0; }
+#source-code .cm-scroller, #split-editor, .preview-content { font-size:var(--editor-size,16px); }
+.preview-content { font-family:var(--document-font); }
+.shortcut-editor { max-height:55vh;overflow:auto; }
+.shortcut-editor label { display:grid;grid-template-columns:1fr 160px;gap:15px;align-items:center;padding:6px 0;font-size:12px; }
+.desktop-settings>label { display:flex;gap:8px;align-items:center; }
+.desktop-settings>label input { width:auto; }
+.desktop-settings>button { margin:10px 8px 0 0;padding:5px 12px; }
+.seamless-title { height:30px;position:relative;display:flex;align-items:center;gap:18px;padding-left:12px;padding-right:140px;-webkit-app-region:drag;background:var(--paper);font:12px 'Segoe UI',sans-serif; }
+.seamless-title button { -webkit-app-region:no-drag;border:0;background:none; }
+body.seamless #app { height:calc(100vh - 30px); }
