@@ -1,0 +1,42 @@
+name: Windows release artifacts (unsigned)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+      - name: Test frontend and Rust
+        shell: pwsh
+        run: |
+          npm test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm run test:rust
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build Windows installer
+        run: npx tauri build --bundles nsis -- --locked
+      - name: Record source and checksums
+        shell: pwsh
+        run: |
+          $artifactDir = New-Item -ItemType Directory -Path release-artifacts
+          Copy-Item src-tauri/target/release/wuffi.exe $artifactDir
+          Copy-Item src-tauri/target/release/bundle/nsis/*-setup.exe $artifactDir
+          git rev-parse HEAD | Set-Content release-artifacts/SOURCE_COMMIT.txt
+          Get-ChildItem release-artifacts/*.exe | ForEach-Object {
+            $digest = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$digest  $($_.Name)"
+          } | Set-Content release-artifacts/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wuffi-windows-unsigned-${{ github.sha }}
+          path: release-artifacts/
+          if-no-files-found: error
+          retention-days: 14

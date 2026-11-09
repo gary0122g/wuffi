@@ -1,5 +1,7 @@
 # wuffi
 
+[Code signing policy／程式碼簽署政策](CODE_SIGNING.md) · [桌面版隱私政策](PRIVACY.md)
+
 **留點空間，給想寫的話。也給陪你寫字的小夥伴。**
 
 [wuffi 官網](https://wuffi.app/) · [English](README.md) · **繁體中文**

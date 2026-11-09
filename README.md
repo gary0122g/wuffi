@@ -30,6 +30,8 @@ Download `wuffi_1.0.0-rc.3_x64-setup.exe`, run the installer, then open **wuffi*
 
 This installer is not digitally signed, so Windows may show an unknown-publisher notice. SHA-256 checksums are included with the download. Supports Windows 10/11 x64.
 
+[Code signing policy](CODE_SIGNING.md) · [Desktop privacy policy](PRIVACY.md)
+
 ## Run from source
 
 These instructions target **Windows x64**. Install Git, Node.js **22.13+**, Rust **1.88+** (MSVC), Visual Studio C++ Build Tools with the Windows SDK, and WebView2 Runtime.
