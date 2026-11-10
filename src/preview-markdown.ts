@@ -28,3 +28,14 @@ const parser = new Marked({ gfm: true, breaks: false, extensions: [mathBlock, ma
 export function previewMarkdown(markdown: string): string {
   return String(parser.parse(markdown))
 }
+
+// Top-level blocks render independently; only reference link definitions are
+// shared, so the preview can re-render just the blocks that changed.
+export type PreviewBlocks = { blocks: { raw: string; html: () => string }[]; links: string }
+export function previewBlocks(markdown: string): PreviewBlocks {
+  const tokens = parser.lexer(markdown)
+  return {
+    links: JSON.stringify(tokens.links),
+    blocks: tokens.map((token) => ({ raw: token.raw, html: () => String(parser.parser(Object.assign([token], { links: tokens.links }))) })),
+  }
+}

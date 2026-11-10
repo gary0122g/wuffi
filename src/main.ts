@@ -416,8 +416,16 @@ function updateContent(content: string): void {
   if (preferences.autoSave && doc.token) autoSaveTimer = window.setTimeout(() => { if (activeDocument().id === doc.id) void saveNativeFile() }, 1500)
 }
 
+let previewTimer = 0
 function renderPreview(): void {
+  window.clearTimeout(previewTimer)
   renderSplitPreview(ui.preview, ui.splitInput.value)
+}
+// Typing re-reads the whole document to find the changed blocks; do that once
+// the writer pauses so the text box itself never waits on the preview.
+function schedulePreview(): void {
+  window.clearTimeout(previewTimer)
+  previewTimer = window.setTimeout(renderPreview, 80)
 }
 
 type VisualSession={editor:Crepe;root:HTMLElement;content:string;serialize:typeof inlineMarkdown;baseline:string;edited:boolean;revision:number;scroll:number}
@@ -738,7 +746,7 @@ function bindEvents(): void {
   ui.sourceInput.addEventListener('input', () => { updateContent(ui.sourceInput.value); sourceEditor.setContent(ui.sourceInput.value) })
   ui.splitInput.addEventListener('input', () => {
     updateContent(ui.splitInput.value)
-    renderPreview()
+    schedulePreview()
   })
   element<HTMLButtonElement>('open-file').addEventListener('click', () => void openNativeFile())
   ui.fileInput.addEventListener('change', async () => {
