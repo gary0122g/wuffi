@@ -1,7 +1,7 @@
 {
   "name": "wuffi",
   "private": true,
-  "version": "1.0.0-rc.4",
+  "version": "1.0.0-rc.5",
   "type": "module",
   "description": "wuffi Markdown 桌面編輯器",
   "author": "wuffi",
