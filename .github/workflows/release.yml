@@ -24,6 +24,9 @@ jobs:
           "version=$version" >> $env:GITHUB_OUTPUT
           npm test
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          # The Rust tests embed the built frontend, as in ci.yml.
+          npm run build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           npm run test:rust
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - uses: tauri-apps/tauri-action@v0
