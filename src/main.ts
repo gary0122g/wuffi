@@ -32,6 +32,7 @@ import { renderDiagram,diagramsForDocument,warmDiagrams } from './diagrams'
 import { renderSplitPreview } from './preview-render'
 import { scrollSettle, scrollToElement } from './scroll-settle'
 import { remarkInlineLinkPlugin } from '@milkdown/kit/preset/commonmark'
+import { listener } from '@milkdown/kit/plugin/listener'
 import { showDesktopSettings,restoreCustomTheme } from './desktop-settings'
 import { languages } from '@codemirror/language-data'
 import { typingRules } from './typing'
@@ -502,7 +503,9 @@ async function mountVisual(): Promise<void> {
   await editor.editor.remove(remarkInlineLinkPlugin)
   // No markdownUpdated listener: the view hook above already stores every edit,
   // and registering one makes Milkdown serialize the whole document again
-  // after each typing pause, which stalls long documents.
+  // after each typing pause, which stalls long documents. Nothing uses the
+  // listener plugin at all, and it serializes the whole document when it starts.
+  await editor.editor.remove(listener)
   try {
     await editor.create()
     if (token !== mountToken || docId !== activeId || mode !== 'visual') {
