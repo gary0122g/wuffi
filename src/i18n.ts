@@ -19,19 +19,35 @@ export function translate(text:string):string {
 }
 const originals=new WeakMap<Text,{original:string;rendered:string}>()
 const attributes=new WeakMap<Element,Map<string,{original:string;rendered:string}>>()
-const contentSelector='.agent-thread,.ProseMirror,#source-code,#split-editor,#preview-content,#document-title,#seamless-document-title,.document-item-title,.document-item-date,.document-folder[data-user-content],.outline-item,#tree-list,.library-match strong,.library-match small'
+const contentSelector='.agent-thread,.ProseMirror,#source-code,#preview-content,#document-title,#seamless-document-title,.document-item-title,.document-item-date,.document-folder[data-user-content],.outline-item,#tree-list,.library-match strong,.library-match small'
+const controlSelector='button,[role=button],.review-progress'
+function translateText(text:Text){
+  const parent=text.parentElement
+  if(!parent||parent.closest('script,style,textarea')||parent.closest(contentSelector)&&!parent.closest(controlSelector))return
+  // Document headings and file names are user content even when clickable.
+  if(parent.closest('.document-item-title,.document-item-date,.document-folder[data-user-content],.outline-item,#tree-list,#seamless-document-title,.library-match strong,.library-match small'))return
+  const previous=originals.get(text),original=previous&&text.data===previous.rendered?previous.original:text.data,rendered=translate(original)
+  if(text.data!==rendered)text.data=rendered
+  originals.set(text,{original,rendered})
+}
 function refresh(){
   observer.disconnect()
-  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT)
+  // User content (a long article holds tens of thousands of nodes) is never
+  // translated, so walk only its controls instead of every text node inside it.
+  const containers:Element[]=[]
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT,{acceptNode(node){
+    if(node.nodeType===Node.TEXT_NODE)return NodeFilter.FILTER_ACCEPT
+    const element=node as Element
+    if(element.matches('script,style,textarea'))return NodeFilter.FILTER_REJECT
+    if(element.matches(contentSelector)&&!element.closest(controlSelector)){containers.push(element);return NodeFilter.FILTER_REJECT}
+    return NodeFilter.FILTER_SKIP
+  }})
   let node:Node|null
-  while((node=walker.nextNode())){
-    const text=node as Text,parent=text.parentElement
-    if(!parent||parent.closest('script,style,textarea')||parent.closest(contentSelector)&&!parent.closest('button,[role=button],.review-progress'))continue
-    // Document headings and file names are user content even when clickable.
-    if(parent.closest('.document-item-title,.document-item-date,.document-folder[data-user-content],.outline-item,#tree-list,#seamless-document-title,.library-match strong,.library-match small'))continue
-    const previous=originals.get(text),original=previous&&text.data===previous.rendered?previous.original:text.data,rendered=translate(original)
-    if(text.data!==rendered)text.data=rendered
-    originals.set(text,{original,rendered})
+  while((node=walker.nextNode()))translateText(node as Text)
+  for(const container of containers)for(const control of container.querySelectorAll(controlSelector)){
+    if(control.parentElement?.closest(controlSelector))continue // An outer control covers it.
+    const texts=document.createTreeWalker(control,NodeFilter.SHOW_TEXT)
+    while((node=texts.nextNode()))translateText(node as Text)
   }
   for(const element of document.querySelectorAll('[title],[aria-label],[placeholder]')){
     if(element.closest('.document-item-title,#tree-list,#seamless-document-title'))continue
@@ -39,10 +55,13 @@ function refresh(){
     for(const name of ['title','aria-label','placeholder']){const value=element.getAttribute(name);if(value===null)continue;const previous=records.get(name),original=previous&&value===previous.rendered?previous.original:value,rendered=translate(original);if(value!==rendered)element.setAttribute(name,rendered);records.set(name,{original,rendered})}
     attributes.set(element,records)
   }
-  document.documentElement.lang=language==='en'?'en':'zh-Hant'
+  // Rewriting lang, even with the same value, restyles the whole page.
+  const lang=language==='en'?'en':'zh-Hant';if(document.documentElement.lang!==lang)document.documentElement.lang=lang
   observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['title','aria-label','placeholder']})
 }
 let scheduled=false
-const observer=new MutationObserver(records=>{if(records.every(record=>(record.target instanceof Element?record.target:record.target.parentElement)?.closest('.ProseMirror,#source-code,#split-editor,#preview-content')))return;if(!scheduled){scheduled=true;queueMicrotask(()=>{scheduled=false;refresh()})}})
+// The interface is written in Traditional Chinese, so only English needs a
+// pass after the interface changes; switching back restores via setLanguage.
+const observer=new MutationObserver(records=>{if(language!=='en'||records.every(record=>(record.target instanceof Element?record.target:record.target.parentElement)?.closest('.ProseMirror,#source-code,#preview-content')))return;if(!scheduled){scheduled=true;queueMicrotask(()=>{scheduled=false;refresh()})}})
 export function setLanguage(value:Language){language=value;localStorage.setItem('liubai.language',value);refresh();document.dispatchEvent(new Event('ui-language-change'));void window.desktop?.settings({action:'save',language:value})}
 export function installLocalization(){refresh()}

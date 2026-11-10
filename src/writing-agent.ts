@@ -5,6 +5,7 @@ import {installFloatingAgent} from './floating-agent'
 import {installCloudAccount} from './cloud-account'
 import {registerAISettings,openAISettings} from './ai-settings'
 import {installDogCompanion} from './dog-companion'
+import {scrollToElement} from './scroll-settle'
 
 export function installWritingAgent(api:WritingAPI,getPreferences:()=>Preferences){
   const en=()=>currentLanguage()==='en',t=(zh:string,english:string)=>en()?english:zh
@@ -52,7 +53,7 @@ export function installWritingAgent(api:WritingAPI,getPreferences:()=>Preference
     const title=document.createElement('strong');title.textContent=action.kind==='replace'?t('修改提案','Suggested edit'):action.kind==='settings'?t('設定提案','Suggested settings'):t('操作提案','Suggested action');card.append(title)
     if(action.kind==='replace'){
       const progress=document.createElement('p');progress.className='review-progress';progress.setAttribute('role','status')
-      const show=button(t('查看內文建議','Review in document'),()=>{close();requestAnimationFrame(()=>document.querySelector('.inline-review')?.scrollIntoView({block:'center'}))})
+      const show=button(t('查看內文建議','Review in document'),()=>{close();requestAnimationFrame(()=>{const review=document.querySelector('.inline-review');if(review)scrollToElement(review)})})
       card.append(progress,show);parent.append(card)
       try{
         api.review(action,snapshot,(remaining,reason)=>{

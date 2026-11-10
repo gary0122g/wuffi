@@ -16,13 +16,20 @@ export const advancedMath=$prose(ctx=>{
   config.renderPreview=(language,content,apply)=>{if(language.toLowerCase()==='latex'||(language.toLowerCase()==='math'&&readPreferences().codeMath))return preview(content,apply);return previous(language,content,apply)}
   return new Plugin({
     props:{nodeViews:{math_inline(node,view,getPos){const dom=document.createElement('span');dom.dataset.type='math_inline';dom.setAttribute('role','math');let current='';const update=(value:string)=>{current=value;dom.dataset.value=value;dom.textContent=value;void renderMath(value,false).then(html=>{if(current===value)dom.innerHTML=html}).catch(error=>{if(current===value)dom.textContent=String(error)})};update(node.attrs.value);dom.addEventListener('mousedown',event=>{if(event.button!==0||!view.editable)return;event.preventDefault();event.stopPropagation();const pos=getPos();if(typeof pos!=='number')return;view.dom.dispatchEvent(new Event('editor-change',{bubbles:true}));openInlineSource(view,pos,pos+1,'$'+current+'$','open',1)});return{dom,update(next){if(next.type.name!=='math_inline')return false;if(next.attrs.value!==current)update(next.attrs.value);return true},ignoreMutation:()=>true}}}},
-    view(view){let timer:number,generation=0,destroyed=false
+    // Typing elsewhere must not re-typeset every formula: MathJax runs only when a
+    // formula or a math preference changes. Rebuilt node views get the cached result.
+    view(view){let timer:number,generation=0,destroyed=false,signature='',rendered:string[]=[],shown=new WeakMap<HTMLElement,Element|null>()
       const refresh=()=>{clearTimeout(timer);const revision=++generation;timer=window.setTimeout(async()=>{
         const nodes:{source:string;display:boolean;pos:number}[]=[];view.state.doc.descendants((node,pos)=>{if(node.type.name==='math_inline')nodes.push({source:node.attrs.value,display:false,pos});else if(node.type.name==='code_block'&&(String(node.attrs.language).toLowerCase()==='latex'||String(node.attrs.language).toLowerCase()==='math'&&readPreferences().codeMath))nodes.push({source:node.textContent,display:true,pos})})
         if(!nodes.length)return
-        const module=await(engine??=import('./math-renderer')),prefs=readPreferences(),html=module.mathBatch(nodes,prefs.mathPhysics,prefs.mathNumbering)
-        if(destroyed||revision!==generation)return
-        nodes.forEach((node,index)=>{if(node.display)typeset.set(mathKey(node.source),'<div class="mathjax-preview">'+html[index]+'</div>');const dom=view.nodeDOM(node.pos);if(!(dom instanceof HTMLElement))return;if(node.display){const preview=dom.querySelector('.preview');if(preview)preview.innerHTML='<div class="mathjax-preview">'+html[index]+'</div>';dom.dataset.mathNumber=String(index)}else dom.innerHTML=html[index]})
+        const prefs=readPreferences(),key=[prefs.mathPhysics,prefs.mathNumbering,prefs.mathLineBreaks,...nodes.map(node=>(node.display?'D':'I')+node.source)].join('\0')
+        if(key!==signature){
+          const module=await(engine??=import('./math-renderer')),html=module.mathBatch(nodes,prefs.mathPhysics,prefs.mathNumbering)
+          if(destroyed||revision!==generation)return
+          signature=key;rendered=html;shown=new WeakMap()
+        }
+        const html=rendered
+        nodes.forEach((node,index)=>{if(node.display)typeset.set(mathKey(node.source),'<div class="mathjax-preview">'+html[index]+'</div>');const dom=view.nodeDOM(node.pos);if(!(dom instanceof HTMLElement))return;const target=node.display?dom.querySelector<HTMLElement>('.preview'):dom;if(target&&shown.has(target)&&shown.get(target)===target.firstElementChild&&target.firstElementChild?.isConnected)return;if(node.display){if(target)target.innerHTML='<div class="mathjax-preview">'+html[index]+'</div>';if(dom.dataset.mathNumber!==String(index))dom.dataset.mathNumber=String(index)}else dom.innerHTML=html[index];if(target)shown.set(target,target.firstElementChild)})
       },30)}
       document.addEventListener('formula-preview-ready',refresh);refresh();return{update(current,previous){if(current.state.doc!==previous.doc)refresh()},destroy(){destroyed=true;clearTimeout(timer);document.removeEventListener('formula-preview-ready',refresh)}}
     },

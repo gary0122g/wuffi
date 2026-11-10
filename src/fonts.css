@@ -15,7 +15,7 @@
 }
 :root { --code-font: 'Sarasa Mono TC'; }
 #source-code .cm-scroller,
-#source-editor, #split-editor,
+#source-editor,
 #milkdown-root .milkdown .ProseMirror code,
 #milkdown-root .milkdown .ProseMirror pre,
 #milkdown-root .milkdown-code-block .cm-scroller,

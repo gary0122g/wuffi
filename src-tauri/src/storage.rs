@@ -6,6 +6,7 @@ use std::{
     io::Write,
     path::{Path, PathBuf},
     sync::Mutex,
+    time::SystemTime,
 };
 use uuid::Uuid;
 
@@ -111,6 +112,36 @@ mod safety_tests {
             .drafts(&json!({"action":"write","window":"","snapshot":{"documents":[{}]}}))
             .is_err());
     }
+    #[test]
+    fn draft_backup_rotates_without_trusting_foreign_files() {
+        let f = Fixture::new();
+        let snapshot = |n: u64| json!({"savedAt":n,"active":"a","documents":[{"id":"a","title":"文章","content":format!("草稿 {n}"),"updatedAt":n}]});
+        let write = |storage: &Storage, n: u64| {
+            storage
+                .drafts(&json!({"action":"write","window":"","snapshot":snapshot(n)}))
+                .unwrap()
+        };
+        let main = f.0.join("drafts/main.json");
+        let backup = f.0.join("drafts/main.json.backup");
+        let storage = Storage::new(f.0.clone()).unwrap();
+        for n in 1..=3 {
+            write(&storage, n);
+        }
+        // Each write keeps the previous draft as the backup.
+        assert_eq!(read_json(&main), Some(snapshot(3)));
+        assert_eq!(read_json(&backup), Some(snapshot(2)));
+        // A draft damaged outside this process never replaces a good backup.
+        fs::write(&main, "{broken").unwrap();
+        write(&storage, 4);
+        assert_eq!(read_json(&main), Some(snapshot(4)));
+        assert_eq!(read_json(&backup), Some(snapshot(2)));
+        // A new process validates the draft it finds before keeping it.
+        let restarted = Storage::new(f.0.clone()).unwrap();
+        write(&restarted, 5);
+        assert_eq!(read_json(&backup), Some(snapshot(4)));
+        assert_eq!(read_json(&main), Some(snapshot(5)));
+        assert_eq!(fs::read_dir(f.0.join("drafts")).unwrap().count(), 2);
+    }
 }
 pub struct Storage {
     pub root: PathBuf,
@@ -119,6 +150,12 @@ pub struct Storage {
     pub settings: Mutex<Value>,
     pub io: Mutex<()>,
     registry_io: Mutex<()>,
+    /// Draft files this process wrote, with the size and time it left them at.
+    drafts_written: Mutex<HashMap<PathBuf, (u64, SystemTime)>>,
+}
+fn file_stamp(path: &Path) -> Option<(u64, SystemTime)> {
+    let meta = fs::metadata(path).ok()?;
+    Some((meta.len(), meta.modified().ok()?))
 }
 pub fn read_json(path: &Path) -> Option<Value> {
     fs::read(path)
@@ -223,10 +260,13 @@ impl Storage {
             folders: Mutex::new(HashMap::new()),
             io: Mutex::new(()),
             registry_io: Mutex::new(()),
+            drafts_written: Mutex::new(HashMap::new()),
         })
     }
     pub fn drafts(&self, data: &Value) -> Result<Value, String> {
-        let _guard = self.io.lock().unwrap();
+        // Drafts only touch the drafts folder: saving an article (which holds
+        // `io`) never waits behind the continuous draft writes while typing.
+        let mut written = self.drafts_written.lock().unwrap();
         let window = data["window"].as_str().ok_or("Invalid draft window")?;
         if window.len() > 80
             || !window
@@ -252,17 +292,26 @@ impl Storage {
         if data["action"] != "write" || !valid_draft(snapshot) {
             return Err("Invalid draft snapshot".into());
         }
-        if serde_json::to_vec(snapshot)
-            .map_err(|e| e.to_string())?
-            .len()
-            > 64 * 1024 * 1024
-        {
+        let content = serde_json::to_vec_pretty(snapshot).map_err(|e| e.to_string())?;
+        if content.len() > 64 * 1024 * 1024 {
             return Err("Draft snapshot is too large".into());
         }
-        if let Some(previous) = read_json(&path).filter(valid_draft) {
+        // Drafts are written on every keystroke. A draft this process wrote
+        // itself (same size and time) is known to be valid, so it becomes the
+        // backup by renaming instead of being read, parsed and written again.
+        // Anything else is validated first, so a damaged file never replaces
+        // a good backup.
+        if written.get(&path).is_some_and(|known| file_stamp(&path).as_ref() == Some(known)) {
+            fs::rename(&path, &backup).map_err(|e| e.to_string())?;
+        } else if let Some(previous) = read_json(&path).filter(valid_draft) {
             write_json(&backup, &previous)?;
         }
-        write_json(&path, snapshot)?;
+        fs::create_dir_all(self.root.join("drafts")).map_err(|e| e.to_string())?;
+        atomic_write(&path, &content)?;
+        match file_stamp(&path) {
+            Some(stamp) => written.insert(path, stamp),
+            None => written.remove(&path),
+        };
         Ok(json!(true))
     }
     pub fn english(&self) -> bool {

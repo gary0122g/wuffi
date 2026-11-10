@@ -22,9 +22,24 @@ export function sameWritingMarkup(a:PMNode,b:PMNode){
   if(a.type.name!=='heading')return a.sameMarkup(b)
   return a.type.create({...a.attrs,id:''},undefined,a.marks).sameMarkup(b.type.create({...b.attrs,id:''},undefined,b.marks))
 }
-export function writingDocument(doc:PMNode){
-  const normalized=writingNode(doc),last=normalized.lastChild
-  // The trailing plugin adds this caret host after a list/table/code block.
-  if(normalized.childCount>1&&last?.type.name==='paragraph'&&!last.content.size&&normalized.child(normalized.childCount-2).type.name!=='paragraph')return normalized.copy(normalized.content.cut(0,normalized.content.size-last.nodeSize))
-  return normalized
+// The trailing plugin adds an empty caret host paragraph after a
+// list/table/code block. It is editor chrome, not part of the Markdown source.
+function hasCaretHost(doc:PMNode){
+  const last=doc.lastChild
+  return doc.childCount>1&&last?.type.name==='paragraph'&&!last.content.size&&doc.child(doc.childCount-2).type.name!=='paragraph'
+}
+export function withoutCaretHost(doc:PMNode){
+  return hasCaretHost(doc)?doc.copy(doc.content.cut(0,doc.content.size-doc.lastChild!.nodeSize)):doc
+}
+export function writingDocument(doc:PMNode){return withoutCaretHost(writingNode(doc))}
+// Same result as writingDocument(a).eq(writingDocument(b)) without rebuilding
+// both documents: a keystroke shares every untouched block with the previous
+// document, so only the changed blocks need normalizing.
+export function sameWritingDocument(a:PMNode,b:PMNode){
+  if(a===b)return true
+  if(a.type!==b.type||!a.sameMarkup(b))return false
+  const count=a.childCount-(hasCaretHost(a)?1:0)
+  if(count!==b.childCount-(hasCaretHost(b)?1:0))return false
+  for(let i=0;i<count;i++){const x=a.child(i),y=b.child(i);if(x!==y&&!sameWritingNode(x,y))return false}
+  return true
 }

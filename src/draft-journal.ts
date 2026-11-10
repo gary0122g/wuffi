@@ -14,9 +14,10 @@ export function createDraftJournal(windowId:string,changed:()=>void){
   }
   return {
     get safe(){return safe},get failed(){return failed},
-    write(snapshot:DraftSnapshot){
+    // `serialized` is JSON.stringify([active, documents]) when the caller already has it.
+    write(snapshot:DraftSnapshot,serialized?:string){
       if(!window.desktop?.drafts)return
-      const content=JSON.stringify([snapshot.active,snapshot.documents]);if(content===last)return
+      const content=serialized??JSON.stringify([snapshot.active,snapshot.documents]);if(content===last)return
       last=content;pending=snapshot;safe=false;changed();if(!running)void drain()
     },
   }
