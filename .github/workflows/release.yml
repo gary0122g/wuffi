@@ -43,6 +43,20 @@ jobs:
           # The project has no "tauri" npm script; run the installed CLI directly.
           tauriScript: npx tauri
           args: --bundles nsis -- --locked
+      - name: Publish installer checksum
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Hash the installer exactly as published, for people who download it by hand.
+          $tag = "v${{ steps.version.outputs.version }}"
+          $file = "wuffi_${{ steps.version.outputs.version }}_x64-setup.exe"
+          gh release download $tag --repo ${{ github.repository }} --pattern $file --dir checksum
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $hash = (Get-FileHash "checksum/$file" -Algorithm SHA256).Hash.ToLower()
+          [IO.File]::WriteAllText("checksum/SHA256SUMS.txt", "$hash  $file`r`n")
+          gh release upload $tag "checksum/SHA256SUMS.txt" --repo ${{ github.repository }} --clobber
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Publish update discovery metadata
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
