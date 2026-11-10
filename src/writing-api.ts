@@ -40,8 +40,16 @@ export function createWritingAPI(host:WritingHost){
       if(!reply||typeof reply!=='object')throw Error('AI 回覆格式不正確，請重試')
       const value=reply as WritingReply
       if(typeof value.message!=='string'||value.message.length>50000||!Array.isArray(value.actions)||value.actions.length>8)throw Error('AI 回覆格式不正確')
-      if(value.actions.filter(action=>action?.kind==='replace'||action?.kind==='edit').length>1)throw Error('一次只能提出一個文章修改，請分次處理')
-      for(const action of value.actions){
+      // Models occasionally drop "kind" from an otherwise complete change; its fields say which it is.
+      const actions=value.actions.map(action=>{
+        if(!action||typeof action!=='object'||'kind' in action)return action
+        const loose=action as Record<string,unknown>
+        if(typeof loose.find==='string'&&typeof loose.markdown==='string')return {...loose,kind:'edit'} as WritingAction
+        if(typeof loose.scope==='string'&&typeof loose.markdown==='string')return {...loose,kind:'replace'} as WritingAction
+        return action
+      })
+      if(actions.filter(action=>action?.kind==='replace'||action?.kind==='edit').length>1)throw Error('一次只能提出一個文章修改，請分次處理')
+      for(const action of actions){
         if(!action||typeof action!=='object')throw Error('AI 操作格式不正確')
         if(action.kind==='replace'){
           if(!['selection','document'].includes(action.scope)||typeof action.markdown!=='string'||action.markdown.length>200000)throw Error('修改提案格式不正確')
@@ -51,7 +59,7 @@ export function createWritingAPI(host:WritingHost){
         else if(action.kind==='command'){if(!host.commands.some(c=>c.name===action.name))throw Error('不支援的操作：'+action.name)}
         else throw Error('不支援的 AI 操作')
       }
-      return {message:value.message,actions:value.actions}
+      return {message:value.message,actions}
     },
     async apply(action:WritingAction,snapshot:WritingSnapshot){
       // Validate again at execution; responses are never executable code.

@@ -56,3 +56,12 @@ test('replies may carry one edit, which counts like a replace',()=>{
  assert.throws(()=>api.validate({message:'',actions:[{kind:'edit',find:'After',markdown:'B'},{kind:'replace',scope:'document',markdown:'x'}]}),/一次只能/)
  assert.throws(()=>api.validate({message:'',actions:[{kind:'edit',find:'',markdown:'B'}]}),/格式不正確/)
 })
+
+test('a change the AI sent without its kind is still recognised',()=>{
+ const api=createWritingAPI({commands:[],snapshot:()=>snapshot,unchanged:()=>true})
+ // Seen from the cloud model: a complete edit with "kind" left out.
+ assert.equal(api.validate({message:'',actions:[{find:'After',markdown:'Before'}]}).actions[0].kind,'edit')
+ assert.equal(api.validate({message:'',actions:[{scope:'document',markdown:'x'}]}).actions[0].kind,'replace')
+ assert.throws(()=>api.validate({message:'',actions:[{markdown:'x'}]}),/不支援的 AI 操作/)
+ assert.throws(()=>api.validate({message:'',actions:[{find:'After',markdown:'B'},{kind:'edit',find:'Notes',markdown:'N'}]}),/一次只能/)
+})
