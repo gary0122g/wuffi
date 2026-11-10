@@ -29,6 +29,7 @@ import { createEditing } from './editing'
 import { inlineMarks, inlineRemark } from './inline-marks'
 import { markdownExtensions,setReferenceImageResolver } from './markdown-extensions'
 import { renderDiagram,diagramsForDocument,warmDiagrams } from './diagrams'
+import { renderSplitPreview } from './preview-render'
 import { remarkInlineLinkPlugin } from '@milkdown/kit/preset/commonmark'
 import { showDesktopSettings,restoreCustomTheme } from './desktop-settings'
 import { languages } from '@codemirror/language-data'
@@ -413,12 +414,7 @@ function updateContent(content: string): void {
 }
 
 function renderPreview(): void {
-  const html = marked.parse(ui.splitInput.value, { gfm: true, breaks: false })
-  ui.preview.innerHTML = DOMPurify.sanitize(String(html), { USE_PROFILES: { html: true } })
-  ui.preview.querySelectorAll('a').forEach((link) => {
-    link.target = '_blank'
-    link.rel = 'noopener noreferrer'
-  })
+  renderSplitPreview(ui.preview, ui.splitInput.value)
 }
 
 type VisualSession={editor:Crepe;root:HTMLElement;content:string;serialize:typeof inlineMarkdown;baseline:string;edited:boolean;revision:number;scroll:number}
