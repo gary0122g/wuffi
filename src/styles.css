@@ -39,7 +39,7 @@ button:focus-visible, input:focus-visible { outline: 1px solid #8aa5ba; outline-
 .workspace { flex: 1; min-height: 0; overflow: auto; scrollbar-width: thin; background: var(--paper); }
 .document-surface { width: 100%; min-height: 100%; }
 #milkdown-root { min-height: calc(100vh - 32px); }
-#milkdown-root .milkdown { --crepe-color-background: var(--paper); --crepe-color-surface: var(--paper); --crepe-color-on-background: var(--ink); --crepe-font-default: "Segoe UI", "Microsoft JhengHei", sans-serif; --crepe-font-title: "Segoe UI", "Microsoft JhengHei", sans-serif; background: var(--paper); color: var(--ink); box-shadow: none; }
+#milkdown-root .milkdown { --crepe-color-background: var(--paper); --crepe-color-surface: var(--paper); --crepe-color-on-background: var(--ink); --crepe-color-primary: var(--ink); --crepe-color-on-surface: var(--ink); --crepe-color-on-surface-variant: var(--muted, #4d4d4d); --crepe-font-default: "Segoe UI", "Microsoft JhengHei", sans-serif; --crepe-font-title: "Segoe UI", "Microsoft JhengHei", sans-serif; background: var(--paper); color: var(--ink); box-shadow: none; }
 #milkdown-root .milkdown .editor { max-width: 860px; min-height: calc(100vh - 32px); margin: auto; padding: 38px 30px 120px; }
 #milkdown-root .milkdown .ProseMirror { outline: 0; font-family: "Segoe UI", "Microsoft JhengHei", sans-serif; color: var(--ink); font-size: 16px; line-height: 1.6; }
 #milkdown-root .milkdown .ProseMirror p { margin: .8em 0; }
