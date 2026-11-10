@@ -11,7 +11,7 @@ import {dogCompanions} from './dog-companion'
 import {inlineReview,startInlineReview,clearInlineReview} from './inline-review'
 import type {ReviewOptions} from './review-diff'
 import {isSelectingText} from './typewriter'
-import {writingDocument} from './writing-document'
+import {writingDocument,sameWritingDocument} from './writing-document'
 import type {Node as WritingNode} from '@milkdown/kit/prose/model'
 import {Slice} from '@milkdown/kit/prose/model'
 import {closeHistory} from '@milkdown/kit/prose/history'
@@ -399,14 +399,17 @@ function renderOutline(): void {
   })
 }
 
+let summaryTimer = 0
 function updateContent(content: string): void {
   const doc = activeDocument()
   if (doc.content === content) return
   documentRevisions.set(doc.id,(documentRevisions.get(doc.id)||0)+1)
   doc.content = content
   doc.updatedAt = Date.now()
-  updateMetrics()
-  renderOutline()
+  // Word count and outline re-parse the whole document; refresh them once
+  // typing pauses instead of on every keystroke. The draft is still stored now.
+  window.clearTimeout(summaryTimer)
+  summaryTimer = window.setTimeout(() => { updateMetrics(); renderOutline() }, 250)
   renderDocuments()
   schedulePersist()
   window.clearTimeout(autoSaveTimer)
@@ -478,7 +481,7 @@ async function mountVisual(): Promise<void> {
   for (const extension of markdownExtensions) editor.editor.use(extension)
   editor.editor.use(typingRules).use(mathDelimiters).use(advancedMath).use(focusMode).use(inlineReview)
   editor.editor.use($prose(()=>new Plugin({view(){return {update(view,previous){
-    if(writingDocument(view.state.doc).eq(writingDocument(previous.doc)))return
+    if(sameWritingDocument(view.state.doc,previous.doc))return
     // The transaction has completed: serialize its actual model immediately,
     // including IME and programmatic edits, without the listener debounce.
     if(crepe===editor&&visualReady&&docId===activeId){visualEdited=true;flushVisual()}
@@ -487,15 +490,9 @@ async function mountVisual(): Promise<void> {
   editor.editor.use(flexibleTable).use(tableTools)
   editor.editor.use(preservedImage).use(imageHtml).use(imageTools)
   await editor.editor.remove(remarkInlineLinkPlugin)
-  editor.on((listener) => {
-    listener.markdownUpdated((_ctx, markdown, previous) => {
-      if (crepe !== editor || !visualReady || !visualEdited || docId !== activeId || markdown === previous) return
-      markdown=serializeVisual(_ctx)
-      if (markdown === visualBaseline) return
-      visualBaseline = markdown
-      updateContent(markdown)
-    })
-  })
+  // No markdownUpdated listener: the view hook above already stores every edit,
+  // and registering one makes Milkdown serialize the whole document again
+  // after each typing pause, which stalls long documents.
   try {
     await editor.create()
     if (token !== mountToken || docId !== activeId || mode !== 'visual') {

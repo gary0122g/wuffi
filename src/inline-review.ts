@@ -4,7 +4,7 @@ import {Decoration,DecorationSet,type EditorView} from '@milkdown/kit/prose/view
 import {Slice,type Node as PMNode} from '@milkdown/kit/prose/model'
 import {closeHistory} from '@milkdown/kit/prose/history'
 import {changedPairs,sentences,reviewWidget,reviewLabels,type ReviewOptions,type ReviewStatus} from './review-diff'
-import {sameWritingNode,sameWritingMarkup,writingDocument} from './writing-document'
+import {sameWritingNode,sameWritingMarkup,sameWritingDocument} from './writing-document'
 
 type Edit={id:number;from:number;to:number;slice:Slice;text:string}
 type Review={items:Edit[];options?:ReviewOptions;reason:ReviewStatus}
@@ -82,7 +82,7 @@ export const inlineReview=$prose(()=>new Plugin<Review>({
       // before the added paragraph. Every existing document node must match.
       const trailingCaret=previous.doc.lastChild?.type.name!=='paragraph'&&tr.doc.childCount===previous.doc.childCount+1&&tr.doc.lastChild?.type.name==='paragraph'&&!tr.doc.lastChild.content.size&&previous.doc.content.eq(tr.doc.content.cut(0,previous.doc.content.size))
       if(tr.docChanged&&trailingCaret&&value.items.length)return {...value,items:value.items.map(i=>({...i,from:tr.mapping.map(i.from,i.from===i.to?-1:1),to:tr.mapping.map(i.to,-1)}))}
-      if(tr.docChanged&&value.items.length&&!writingDocument(tr.doc).eq(writingDocument(previous.doc)))return {...value,items:[],reason:'changed'}
+      if(tr.docChanged&&value.items.length&&!sameWritingDocument(tr.doc,previous.doc))return {...value,items:[],reason:'changed'}
       return value
     },
   },
