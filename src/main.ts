@@ -16,6 +16,7 @@ import type {Node as WritingNode} from '@milkdown/kit/prose/model'
 import {Slice} from '@milkdown/kit/prose/model'
 import {closeHistory} from '@milkdown/kit/prose/history'
 import {isolateHistory} from '@codemirror/commands'
+import { EditorView } from '@codemirror/view'
 import {installLocalization,setLanguage,currentLanguage,translate} from './i18n'
 import { advancedMath,mathDelimiters,renderExportMath } from './advanced-math'
 import { preserveSource } from './preserve-source'
@@ -140,7 +141,7 @@ const ui = {
   source: element<HTMLElement>('source-view'),
   sourceInput: element<HTMLTextAreaElement>('source-editor'),
   split: element<HTMLElement>('split-view'),
-  splitInput: element<HTMLTextAreaElement>('split-editor'),
+  splitSource: document.querySelector<HTMLElement>('.split-source')!,
   preview: element<HTMLElement>('preview-content'),
   saveStatus: element<HTMLElement>('save-status'),
   wordCount: element<HTMLElement>('word-count'),
@@ -275,7 +276,7 @@ async function performNativeSave(saveAs: boolean, target:DocumentRecord): Promis
     if(doc.content===submitted){
       doc.content=content
       if(doc.id===activeId){
-        ui.sourceInput.value=content;if(mode==='source')sourceEditor.setContent(content);ui.splitInput.value=content
+        ui.sourceInput.value=content;if(mode!=='visual')sourceEditor.setContent(content)
         if(content!==submitted)renderCurrentDocument()
       }
     }
@@ -395,12 +396,10 @@ function renderOutline(): void {
         const heading = nodes[index]
         if (heading) scrollToElement(heading)
       } else {
-        const textarea = mode === 'source' ? ui.sourceInput : ui.splitInput
-        const lines = textarea.value.split('\n')
-        const offset = lines.slice(0, heading.line).reduce((total, line) => total + line.length + 1, 0)
-        textarea.focus()
-        textarea.setSelectionRange(offset, offset)
-        textarea.scrollTop = Math.max(0, heading.line * 25 - textarea.clientHeight / 3)
+        const view = sourceEditor.view
+        const line = view.state.doc.line(Math.min(heading.line + 1, view.state.doc.lines))
+        view.dispatch({ selection: { anchor: line.from }, effects: EditorView.scrollIntoView(line.from, { y: 'center' }) })
+        sourceEditor.focus()
       }
     })
     ui.outlineList.append(button)
@@ -427,7 +426,7 @@ function updateContent(content: string): void {
 let previewTimer = 0
 function renderPreview(): void {
   window.clearTimeout(previewTimer)
-  renderSplitPreview(ui.preview, ui.splitInput.value)
+  renderSplitPreview(ui.preview, activeDocument().content)
 }
 // Typing re-reads the whole document to find the changed blocks; do that once
 // the writer pauses so the text box itself never waits on the preview.
@@ -539,7 +538,9 @@ async function mountVisual(): Promise<void> {
 
 const sourceEditor = createSourceEditor(element('source-code'), value => {
   ui.sourceInput.value = value
-  if (mode === 'source') updateContent(value)
+  if (mode === 'visual') return
+  updateContent(value)
+  if (mode === 'split') schedulePreview()
 })
 
 // Native safety-test builds opt in before page scripts run. This fixture only
@@ -550,6 +551,12 @@ if((window as any).__WUFFI_BACKGROUND_TEST__){
 }
 
 function renderMode(): void {
+  // Source and split mode share one CodeMirror editor; it moves to the visible pane.
+  // Moving it, or changing the mode's layout classes, resets its scroll position,
+  // so remember the top line first, while the old layout is still in place.
+  const sourceCode = element('source-code'), sourceHost = mode === 'split' ? ui.splitSource : ui.source
+  const moving = sourceCode.parentElement !== sourceHost
+  const topLine = moving && !sourceCode.closest('[hidden]') ? sourceEditor.view.lineBlockAtHeight(sourceEditor.view.scrollDOM.scrollTop).from : undefined
   sourceEditor.clearReview()
   document.querySelector('.chrome-preview')?.setAttribute('aria-pressed',String(mode==='split'))
   document.body.classList.toggle('source-mode', mode === 'source')
@@ -558,6 +565,12 @@ function renderMode(): void {
   ui.visual.hidden = mode !== 'visual'
   ui.source.hidden = mode !== 'source'
   ui.split.hidden = mode !== 'split'
+  document.body.classList.toggle('split-mode', mode === 'split')
+  if (moving) {
+    sourceHost.append(sourceCode)
+    // Wait for the new pane's layout before scrolling, or the editor measures the old one.
+    if (topLine !== undefined) requestAnimationFrame(() => sourceEditor.view.dispatch({ effects: EditorView.scrollIntoView(topLine, { y: 'start' }) }))
+  }
   document.querySelectorAll<HTMLButtonElement>('.mode-button').forEach((button) => {
     const selected = button.dataset.mode === mode
     button.classList.toggle('active', selected)
@@ -570,7 +583,6 @@ function renderMode(): void {
     ui.sourceInput.value = activeDocument().content
     sourceEditor.setDocument(activeId,activeDocument().content)
     sourceEditor.retainDocuments(documents.map(doc=>doc.id))
-    ui.splitInput.value = activeDocument().content
     if (mode === 'split') renderPreview()
   }
 }
@@ -582,8 +594,7 @@ function setMode(next: Mode): void {
   localStorage.setItem(MODE_KEY, mode)
   renderMode()
   refreshTypewriter()
-  if (mode === 'source') sourceEditor.focus()
-  if (mode === 'split') ui.splitInput.focus()
+  if (mode !== 'visual') sourceEditor.focus()
 }
 
 function renderCurrentDocument(): void {
@@ -617,7 +628,7 @@ function createDocument(title = '未命名', content = ''): void {
   renderCurrentDocument()
   closeMobileSidebar()
   refreshTypewriter()
-  if (mode === 'source') sourceEditor.focus()
+  if (mode !== 'visual') sourceEditor.focus()
   notify('已建立新文件')
 }
 
@@ -754,10 +765,6 @@ function bindEvents(): void {
     }
   })
   ui.sourceInput.addEventListener('input', () => { updateContent(ui.sourceInput.value); sourceEditor.setContent(ui.sourceInput.value) })
-  ui.splitInput.addEventListener('input', () => {
-    updateContent(ui.splitInput.value)
-    schedulePreview()
-  })
   element<HTMLButtonElement>('open-file').addEventListener('click', () => void openNativeFile())
   ui.fileInput.addEventListener('change', async () => {
     const file = ui.fileInput.files?.[0]
@@ -909,7 +916,7 @@ function refreshTypewriter(): void {
   document.body.style.setProperty('--typewriter-space', `${workspace.clientHeight/2}px`)
   requestAnimationFrame(()=>{
     if(!document.body.classList.contains('typewriter-mode'))return
-    if(mode==='source')sourceEditor.centerCursor()
+    if(mode!=='visual')sourceEditor.centerCursor()
     else updateFocusedBlock()
   })
 }
@@ -947,8 +954,8 @@ function applyFormat(format: string): void {
     })
     return
   }
-  const input = mode === 'split' ? ui.splitInput : ui.sourceInput
-  if (mode === 'source') { const selection = sourceEditor.view.state.selection.main; input.setSelectionRange(selection.from, selection.to) }
+  const input = ui.sourceInput
+  { const selection = sourceEditor.view.state.selection.main; input.setSelectionRange(selection.from, selection.to) }
   const start = input.selectionStart, end = input.selectionEnd
   const marker = format === 'bold' ? '**' : format === 'italic' ? '*' : format === 'code' ? '`' : format === 'strike' ? '~~' : ''
   if (['underline','sub','sup','highlight'].includes(format)) { const tag=({underline:'u',sub:'sub',sup:'sup',highlight:'mark'} as Record<string,string>)[format]; input.setRangeText(`<${tag}>${input.value.slice(start,end)}</${tag}>`,start,end,'select') }
@@ -962,8 +969,7 @@ function applyFormat(format: string): void {
   }
   updateContent(input.value)
   if (mode === 'split') renderPreview()
-  if (mode === 'source') { sourceEditor.setContent(input.value); sourceEditor.view.dispatch({ selection: { anchor: input.selectionStart, head: input.selectionEnd } }); sourceEditor.focus() }
-  else input.focus()
+  sourceEditor.setContent(input.value); sourceEditor.view.dispatch({ selection: { anchor: input.selectionStart, head: input.selectionEnd } }); sourceEditor.focus()
 }
 
 
@@ -1055,10 +1061,8 @@ async function fileAction(action: 'info' | 'reload' | 'reveal'): Promise<void> {
 function insertMarkdown(markdown: string): void {
   if (document.body.classList.contains('read-only')) return
   if (mode === 'visual' && crepe) { visualEdited = true; crepe.editor.action(insert(markdown)); crepe.editor.action(ctx => ctx.get(editorViewCtx).focus()); return }
-  if (mode === 'source') {
-    const selection = sourceEditor.view.state.selection.main
-    sourceEditor.view.dispatch({ changes: { from: selection.from, to: selection.to, insert: markdown }, selection: { anchor: selection.from + markdown.length } }); sourceEditor.focus()
-  } else { ui.splitInput.setRangeText(markdown, ui.splitInput.selectionStart, ui.splitInput.selectionEnd, 'end'); updateContent(ui.splitInput.value); renderPreview() }
+  const selection = sourceEditor.view.state.selection.main
+  sourceEditor.view.dispatch({ changes: { from: selection.from, to: selection.to, insert: markdown }, selection: { anchor: selection.from + markdown.length } }); sourceEditor.focus()
 }
 function insertLink(image: boolean): void {
   const dialog = makeDialog(image ? '插入圖片' : '插入超連結')
@@ -1171,8 +1175,7 @@ function writingSnapshot():WritingSnapshot{
     const view=ctx.get(editorViewCtx),s=view.state.selection
     return {from:s.from,to:s.to,markdown:s.empty?'':ctx.get(serializerCtx)(view.state.doc.type.create(null,s.content().content)).trimEnd()}
   })
-  else if(mode==='source'){const view=sourceEditor.view,s=view.state.selection.main;selection={from:s.from,to:s.to,markdown:view.state.sliceDoc(s.from,s.to)}}
-  else if(mode==='split')selection={from:ui.splitInput.selectionStart,to:ui.splitInput.selectionEnd,markdown:ui.splitInput.value.slice(ui.splitInput.selectionStart,ui.splitInput.selectionEnd)}
+  else if(mode!=='visual'){const view=sourceEditor.view,s=view.state.selection.main;selection={from:s.from,to:s.to,markdown:view.state.sliceDoc(s.from,s.to)}}
   const metrics=documentMetrics(doc.content)
   const snapshot:WritingSnapshot={documentId:doc.id,title:doc.title,markdown:doc.content,revision:documentRevisions.get(doc.id)||0,selection,mode,readonly:document.body.classList.contains('read-only'),focus:document.body.classList.contains('focus-mode'),typewriter:document.body.classList.contains('typewriter-mode'),statistics:{words:metrics.words,characters:metrics.characters,lines:doc.content.split('\n').length}}
   if(mode==='visual'&&crepe&&visualReady)writingModels.set(snapshot,crepe.editor.action(ctx=>writingDocument(ctx.get(editorViewCtx).state.doc)))
@@ -1198,12 +1201,8 @@ function applyWritingReplacement(snapshot:WritingSnapshot,scope:'selection'|'doc
     view.dispatch(closeHistory(view.state.tr))
     flushVisual();view.focus()
   })
-  else if(mode==='source'){
+  else if(mode!=='visual'){
     const view=sourceEditor.view,from=scope==='document'?0:snapshot.selection.from,to=scope==='document'?view.state.doc.length:snapshot.selection.to
-    view.dispatch({changes:{from,to,insert:markdown},annotations:isolateHistory.of('full'),userEvent:'input.agent'});view.focus()
-  }else if(mode==='split'){
-    // Use the source editor history for agent changes even in split preview.
-    setMode('source');const view=sourceEditor.view,from=scope==='document'?0:snapshot.selection.from,to=scope==='document'?view.state.doc.length:snapshot.selection.to
     view.dispatch({changes:{from,to,insert:markdown},annotations:isolateHistory.of('full'),userEvent:'input.agent'});view.focus()
   }else throw Error('編輯器尚未就緒，請稍後重試')
 }
@@ -1217,8 +1216,7 @@ function reviewWritingReplacement(snapshot:WritingSnapshot,scope:'selection'|'do
     const target=view.state.tr.replaceRange(from,to,new Slice(fragment,0,0)).doc
     return startInlineReview(view,target,{...options,edited:()=>{visualEdited=true;options.edited()}})
   })
-  if(mode==='split')setMode('source')
-  if(mode==='source')return sourceEditor.review(scope==='document'?0:snapshot.selection.from,scope==='document'?sourceEditor.view.state.doc.length:snapshot.selection.to,markdown,options)
+  if(mode!=='visual')return sourceEditor.review(scope==='document'?0:snapshot.selection.from,scope==='document'?sourceEditor.view.state.doc.length:snapshot.selection.to,markdown,options)
   throw Error('編輯器尚未就緒，請稍後重試')
 }
 const agentCommands=[
@@ -1246,7 +1244,7 @@ const writingAPI=createWritingAPI({snapshot:writingSnapshot,unchanged:writingUnc
   }
   if(name.startsWith('format:')){applyFormat(name.slice(7));return}
   if(name.startsWith('edit:')){
-    if(mode==='visual'&&crepe)crepe.editor.action(ctx=>ctx.get(editorViewCtx).focus());else if(mode==='source')sourceEditor.focus()
+    if(mode==='visual'&&crepe)crepe.editor.action(ctx=>ctx.get(editorViewCtx).focus());else if(mode!=='visual')sourceEditor.focus()
     await editing.command(name.slice(5));return
   }
   await executeDesktopCommand(name)
@@ -1322,7 +1320,7 @@ initializeAppUpdates()
 document.addEventListener('ui-language-change',()=>{updateNativeState();renderDocuments()})
 function syncReadOnly(){
   document.body.classList.toggle('read-only',manualReadOnly)
-  crepe?.setReadonly(manualReadOnly);sourceEditor.setReadonly(manualReadOnly);ui.sourceInput.readOnly=manualReadOnly;ui.splitInput.readOnly=manualReadOnly
+  crepe?.setReadonly(manualReadOnly);sourceEditor.setReadonly(manualReadOnly);ui.sourceInput.readOnly=manualReadOnly
   ui.title.readOnly=Boolean(activeDocument().path)
 }
 if(window.desktop?.benchmarkReport)void import('./runtime-benchmark').then(module=>module.runRuntimeBenchmark())

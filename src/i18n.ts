@@ -19,7 +19,7 @@ export function translate(text:string):string {
 }
 const originals=new WeakMap<Text,{original:string;rendered:string}>()
 const attributes=new WeakMap<Element,Map<string,{original:string;rendered:string}>>()
-const contentSelector='.agent-thread,.ProseMirror,#source-code,#split-editor,#preview-content,#document-title,#seamless-document-title,.document-item-title,.document-item-date,.document-folder[data-user-content],.outline-item,#tree-list,.library-match strong,.library-match small'
+const contentSelector='.agent-thread,.ProseMirror,#source-code,#preview-content,#document-title,#seamless-document-title,.document-item-title,.document-item-date,.document-folder[data-user-content],.outline-item,#tree-list,.library-match strong,.library-match small'
 const controlSelector='button,[role=button],.review-progress'
 function translateText(text:Text){
   const parent=text.parentElement
@@ -62,6 +62,6 @@ function refresh(){
 let scheduled=false
 // The interface is written in Traditional Chinese, so only English needs a
 // pass after the interface changes; switching back restores via setLanguage.
-const observer=new MutationObserver(records=>{if(language!=='en'||records.every(record=>(record.target instanceof Element?record.target:record.target.parentElement)?.closest('.ProseMirror,#source-code,#split-editor,#preview-content')))return;if(!scheduled){scheduled=true;queueMicrotask(()=>{scheduled=false;refresh()})}})
+const observer=new MutationObserver(records=>{if(language!=='en'||records.every(record=>(record.target instanceof Element?record.target:record.target.parentElement)?.closest('.ProseMirror,#source-code,#preview-content')))return;if(!scheduled){scheduled=true;queueMicrotask(()=>{scheduled=false;refresh()})}})
 export function setLanguage(value:Language){language=value;localStorage.setItem('liubai.language',value);refresh();document.dispatchEvent(new Event('ui-language-change'));void window.desktop?.settings({action:'save',language:value})}
 export function installLocalization(){refresh()}

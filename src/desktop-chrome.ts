@@ -13,7 +13,7 @@ export function installWritingSettings(open:()=>void){
  const reveal=()=>document.body.classList.remove('chrome-collapsed')
  button.addEventListener('focus',reveal)
  document.addEventListener('beforeinput',event=>{
-  if(event.target instanceof Element&&event.target.closest('.ProseMirror,#source-code,#split-editor')){document.body.classList.add('chrome-collapsed');document.body.classList.remove('writing-menu-visible')}
+  if(event.target instanceof Element&&event.target.closest('.ProseMirror,#source-code')){document.body.classList.add('chrome-collapsed');document.body.classList.remove('writing-menu-visible')}
  },true)
  document.addEventListener('keydown',event=>{if(event.key==='F10'||event.key==='Alt')reveal()})
  document.addEventListener('pointermove',event=>{if(event.clientY<=32)reveal()},{passive:true})

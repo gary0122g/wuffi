@@ -59,7 +59,7 @@ button:focus-visible, input:focus-visible { outline: 1px solid #8aa5ba; outline-
 #milkdown-root .milkdown .ProseMirror td p, #milkdown-root .milkdown .ProseMirror th p { margin: 0; padding: 0; }
 #milkdown-root .milkdown .ProseMirror blockquote::before { display: none; }
 #source-view { max-width: 920px; margin: auto; padding: 32px 30px 100px; }
-#source-editor, #split-editor { display: block; width: 100%; min-height: calc(100vh - 180px); border: 0; outline: 0; resize: none; padding: 0; color: var(--ink); background: var(--paper); font: 14px/1.8 Consolas, "Microsoft JhengHei", monospace; tab-size: 4; }
+#source-editor { display: block; width: 100%; min-height: calc(100vh - 180px); border: 0; outline: 0; resize: none; padding: 0; color: var(--ink); background: var(--paper); font: 14px/1.8 Consolas, "Microsoft JhengHei", monospace; tab-size: 4; }
 .split-view { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .split-pane { min-width: 0; padding: 22px; }
 .split-source { border-right: 1px solid var(--line); }
@@ -324,7 +324,7 @@ body.night #source-code .cm-content { caret-color:#ee9bc0; }
 body.night #source-code .cm-cursor { border-left-color:#ee9bc0; }
 body[data-theme] #milkdown-root .milkdown .ProseMirror,
 body[data-theme] #milkdown-root .milkdown .ProseMirror :is(p,li,blockquote,td,th),
-#source-code .cm-scroller, #split-editor, .preview-content { line-height:var(--editor-line-height,1.6); }
+#source-code .cm-scroller, .preview-content { line-height:var(--editor-line-height,1.6); }
 body.typewriter-mode #milkdown-root .milkdown .editor { padding-top:var(--typewriter-space,50vh)!important; padding-bottom:var(--typewriter-space,50vh)!important; }
 body.typewriter-mode #source-code .cm-content { padding-top:var(--typewriter-space,50vh)!important; padding-bottom:var(--typewriter-space,50vh)!important; }
 /* Mermaid measures each diagram in a temporary element at the end of <body>.
@@ -338,3 +338,14 @@ body > div[id^="ddiagram-"] { position: fixed !important; top: 0; left: -10000px
    blocks own floating tools that paint containment would clip. */
 .ProseMirror > :is(p,h1,h2,h3,h4,h5,h6,ul,ol,hr),
 .preview-content > :is(p,h1,h2,h3,h4,h5,h6,hr) { content-visibility:auto; contain-intrinsic-size:auto 3em; }
+
+/* Split mode hosts the source-mode CodeMirror editor. Each pane scrolls on its
+   own so the editor only lays out the lines on screen. */
+body.split-mode .workspace { overflow: hidden; }
+body.split-mode .document-surface, body.split-mode .split-view { height: 100%; }
+body.split-mode .split-view { grid-template-rows: minmax(0, 1fr); }
+body.split-mode .split-pane { min-height: 0; }
+body.split-mode .split-source { display: flex; flex-direction: column; padding-right: 0; padding-bottom: 0; }
+body.split-mode .split-source #source-code { flex: 1; min-height: 0; }
+body.split-mode .split-source #source-code .cm-content { padding: 0 22px 100px 0; }
+body.split-mode .split-preview { overflow: auto; scrollbar-width: thin; }

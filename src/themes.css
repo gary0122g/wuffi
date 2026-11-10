@@ -20,7 +20,7 @@ body[data-theme=night] .statusbar :is(button,.word-count) { color:#aaa; }
 body[data-theme] #milkdown-root .milkdown .ProseMirror,
 body[data-theme] #milkdown-root .milkdown .ProseMirror :is(p,li,table) { font-size:var(--editor-size,16px); line-height:var(--editor-line-height,1.6); }
 body[data-theme] #milkdown-root .milkdown .ProseMirror :is(td,th) p { margin:0; padding:0; }
-#source-code .cm-scroller, #split-editor, .preview-content { font-size:var(--editor-size,16px); }
+#source-code .cm-scroller, .preview-content { font-size:var(--editor-size,16px); }
 .preview-content { font-family:var(--document-font); }
 .shortcut-editor { max-height:55vh;overflow:auto; }
 .shortcut-editor label { display:grid;grid-template-columns:1fr 160px;gap:15px;align-items:center;padding:6px 0;font-size:12px; }
