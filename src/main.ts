@@ -32,6 +32,7 @@ import { markdownExtensions,setReferenceImageResolver } from './markdown-extensi
 import { renderDiagram,diagramsForDocument,warmDiagrams } from './diagrams'
 import { renderSplitPreview } from './preview-render'
 import { scrollSettle, scrollToElement } from './scroll-settle'
+import { createSplitScroll } from './split-scroll'
 import { remarkInlineLinkPlugin } from '@milkdown/kit/preset/commonmark'
 import { listener } from '@milkdown/kit/plugin/listener'
 import { showDesktopSettings,restoreCustomTheme } from './desktop-settings'
@@ -427,6 +428,8 @@ let previewTimer = 0
 function renderPreview(): void {
   window.clearTimeout(previewTimer)
   renderSplitPreview(ui.preview, activeDocument().content)
+  splitScroll.attach()
+  splitScroll.refresh()
 }
 // Typing re-reads the whole document to find the changed blocks; do that once
 // the writer pauses so the text box itself never waits on the preview.
@@ -536,6 +539,7 @@ async function mountVisual(): Promise<void> {
   }
 }
 
+const splitScroll = createSplitScroll(() => sourceEditor.view, ui.preview, ui.preview.parentElement!, () => mode === 'split')
 const sourceEditor = createSourceEditor(element('source-code'), value => {
   ui.sourceInput.value = value
   if (mode === 'visual') return

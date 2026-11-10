@@ -14,7 +14,14 @@ const typeset = previewCache(300)
 // blocks keep their nodes, so a keystroke rebuilds and re-lays-out one block
 // instead of the whole preview of a long document.
 type Block = { key: string; nodes: ChildNode[] }
-const states = new WeakMap<HTMLElement, { context: string; blocks: Block[] }>()
+/** The first element a source block rendered, and the 0-based source line the block starts on. */
+export type PreviewAnchor = { line: number; element: Element }
+const states = new WeakMap<HTMLElement, { context: string; blocks: Block[]; anchors: PreviewAnchor[] }>()
+
+/** Where each rendered block of the preview starts in the source, in document order. */
+export function previewAnchors(target: HTMLElement): PreviewAnchor[] {
+  return states.get(target)?.anchors ?? []
+}
 
 /** Renders the split preview like the visual editor: Markdown, formulas and diagrams. */
 export function renderSplitPreview(target: HTMLElement, markdown: string): void {
@@ -25,7 +32,7 @@ export function renderSplitPreview(target: HTMLElement, markdown: string): void 
   let state = states.get(target)
   if (!state || state.context !== context || state.blocks.some((block) => block.nodes.some((node) => node.parentNode !== target))) {
     target.replaceChildren()
-    state = { context, blocks: [] }
+    state = { context, blocks: [], anchors: [] }
     states.set(target, state)
   }
   const previous = state.blocks, next: Block[] = new Array(blocks.length), kept = new Set<number>()
@@ -37,6 +44,15 @@ export function renderSplitPreview(target: HTMLElement, markdown: string): void 
   for (const block of next) for (const node of block.nodes) { if (node === cursor) cursor = node.nextSibling; else target.insertBefore(node, cursor) }
   while (cursor) { const following = cursor.nextSibling; cursor.remove(); cursor = following }
   state.blocks = next
+  // Block sources follow each other, so a block starts after the lines of those before it.
+  const anchors: PreviewAnchor[] = []
+  let line = 0
+  next.forEach((block, index) => {
+    const element = block.nodes.find((node): node is Element => node instanceof Element)
+    if (element) anchors.push({ line, element })
+    line += blocks[index].raw.split('\n').length - 1
+  })
+  state.anchors = anchors
 }
 
 function renderBlock(html: string, prefs: ReturnType<typeof readPreferences>): ChildNode[] {
