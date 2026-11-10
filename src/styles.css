@@ -330,3 +330,11 @@ body.typewriter-mode #source-code .cm-content { padding-top:var(--typewriter-spa
 /* Mermaid measures each diagram in a temporary element at the end of <body>.
    Keep it out of the page flow so rendering never adds a window scrollbar. */
 body > div[id^="ddiagram-"] { position: fixed !important; top: 0; left: -10000px; }
+/* Long documents: let the browser skip style and layout for text blocks that
+   are off screen, so page-wide changes (focus mode, themes, the sidebar)
+   restyle what is visible instead of every block. Only blocks whose layout
+   containment changes nothing are listed: blockquotes (and preview lists)
+   would stop collapsing their paragraph margins, and code, table and image
+   blocks own floating tools that paint containment would clip. */
+.ProseMirror > :is(p,h1,h2,h3,h4,h5,h6,ul,ol,hr),
+.preview-content > :is(p,h1,h2,h3,h4,h5,h6,hr) { content-visibility:auto; contain-intrinsic-size:auto 3em; }

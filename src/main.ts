@@ -30,6 +30,7 @@ import { inlineMarks, inlineRemark } from './inline-marks'
 import { markdownExtensions,setReferenceImageResolver } from './markdown-extensions'
 import { renderDiagram,diagramsForDocument,warmDiagrams } from './diagrams'
 import { renderSplitPreview } from './preview-render'
+import { scrollSettle, scrollToElement } from './scroll-settle'
 import { remarkInlineLinkPlugin } from '@milkdown/kit/preset/commonmark'
 import { showDesktopSettings,restoreCustomTheme } from './desktop-settings'
 import { languages } from '@codemirror/language-data'
@@ -385,7 +386,8 @@ function renderOutline(): void {
       closeMobileSidebar()
       if (mode === 'visual') {
         const nodes = ui.visualRoot.querySelectorAll('h1,h2,h3,h4,h5,h6')
-        nodes[index]?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const heading = nodes[index]
+        if (heading) scrollToElement(heading)
       } else {
         const textarea = mode === 'source' ? ui.sourceInput : ui.splitInput
         const lines = textarea.value.split('\n')
@@ -487,7 +489,7 @@ async function mountVisual(): Promise<void> {
   for (const mark of inlineMarks) editor.editor.use(mark)
   editor.editor.use(inlineRemark)
   for (const extension of markdownExtensions) editor.editor.use(extension)
-  editor.editor.use(typingRules).use(mathDelimiters).use(advancedMath).use(focusMode).use(inlineReview)
+  editor.editor.use(typingRules).use(mathDelimiters).use(advancedMath).use(focusMode).use(inlineReview).use(scrollSettle)
   editor.editor.use($prose(()=>new Plugin({view(){return {update(view,previous){
     if(sameWritingDocument(view.state.doc,previous.doc))return
     // The transaction has completed: serialize its actual model immediately,
