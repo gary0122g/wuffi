@@ -187,16 +187,21 @@ function activeDocument(): DocumentRecord {
 const draftJournal=createDraftJournal(windowKey,()=>updateNativeState())
 let draftSavedAt=usedDraftBackup?0:Number(localStorage.getItem(STORAGE_KEY+'.savedAt'))||0
 
+// The draft this window last stored, which becomes the backup on the next
+// change. Kept in memory so a keystroke does not read and re-parse the whole
+// stored draft. A draft recovered from the backup is not trusted as one.
+let storedDraft=usedDraftBackup?null:localStorage.getItem(STORAGE_KEY)
 function persist(): void {
   draftSavedAt=Math.max(Date.now(),draftSavedAt+1)
-  draftJournal.write({savedAt:draftSavedAt,active:activeId,documents:documents.map(doc=>({...doc}))})
+  const serialized=JSON.stringify(documents)
+  draftJournal.write({savedAt:draftSavedAt,active:activeId,documents:documents.map(doc=>({...doc}))},'['+JSON.stringify(activeId)+','+serialized+']')
   try {
-    const serialized=JSON.stringify(documents),previous=localStorage.getItem(STORAGE_KEY)
-    if(previous&&previous!==serialized){
+    if(storedDraft&&storedDraft!==serialized){
       // Backup failure must not prevent storing the latest article near quota.
-      try{if(Array.isArray(JSON.parse(previous)))localStorage.setItem(STORAGE_KEY+'.backup',previous)}catch{}
+      try{localStorage.setItem(STORAGE_KEY+'.backup',storedDraft)}catch{}
     }
     localStorage.setItem(STORAGE_KEY, serialized)
+    storedDraft=serialized
     localStorage.setItem(ACTIVE_KEY, activeId)
     localStorage.setItem(STORAGE_KEY+'.savedAt',String(draftSavedAt))
     updateNativeState()
