@@ -28,9 +28,9 @@ wuffi 是免費、開源的 Markdown 桌面編輯器。寫筆記、整理靈感�
 
 ## 下載與安裝
 
-[下載 Windows x64 安裝程式](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.5)
+[下載 Windows x64 安裝程式](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.6)
 
-下載 `wuffi_1.0.0-rc.5_x64-setup.exe`，雙擊安裝，完成後從開始功能表開啟 **wuffi**。不需要 Node.js、Rust 或自行編譯。安裝程式會在缺少 WebView2 時連網安裝。
+下載 `wuffi_1.0.0-rc.6_x64-setup.exe`，雙擊安裝，完成後從開始功能表開啟 **wuffi**。不需要 Node.js、Rust 或自行編譯。安裝程式會在缺少 WebView2 時連網安裝。
 
 這份安裝程式尚未數位簽署，Windows 可能顯示未知發行者。下載頁提供 SHA-256 校驗值。支援 Windows 10／11 x64。
 

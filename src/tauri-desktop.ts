@@ -35,7 +35,7 @@ function installTauriDesktop(){
   if(name.startsWith('zoom:')){zoom=name==='zoom:reset'?1:Math.max(.5,Math.min(2,Math.round((zoom+(name==='zoom:in'?.1:-.1))*10)/10));void call('preferences',{zoom}).catch(console.error);return}
   if(name.startsWith('native:')){void editCommand(name).catch(console.error);return}
   if(name==='agent'){document.querySelector<HTMLButtonElement>('.agent-entry')?.click();return}
-  if(name==='about'){alert(`wuffi 1.0.0-rc.5\nTauri + Milkdown + CodeMirror`);return}
+  if(name==='about'){alert(`wuffi 1.0.0-rc.6\nTauri + Milkdown + CodeMirror`);return}
   for(const callback of commands)callback(name)
  }
  void tauri.event.listen<string>('desktop:command',event=>command(event.payload)).catch(console.error)
