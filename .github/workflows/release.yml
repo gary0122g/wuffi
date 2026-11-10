@@ -40,6 +40,8 @@ jobs:
           releaseBody: 'Windows Tauri release. Local editing and Local AI remain free. Install this version once to enable signed in-app updates.'
           releaseDraft: false
           prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          # The project has no "tauri" npm script; run the installed CLI directly.
+          tauriScript: npx tauri
           args: --bundles nsis -- --locked
       - name: Publish update discovery metadata
         env:
