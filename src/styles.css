@@ -64,12 +64,12 @@ button:focus-visible, input:focus-visible { outline: 1px solid #8aa5ba; outline-
 .split-pane { min-width: 0; padding: 22px; }
 .split-source { border-right: 1px solid var(--line); }
 .pane-heading { color: var(--muted); font-size: 11px; margin-bottom: 24px; }
-.preview-content { overflow-wrap: anywhere; font-size: 16px; line-height: 1.6; }
+.preview-content { overflow-wrap: anywhere; font-size: 16px; line-height: 1.6; color: var(--ink); }
 .preview-content h1, .preview-content h2 { border-bottom: 1px solid var(--line); padding-bottom: .3em; }
 .preview-content pre { overflow: auto; background: var(--side); padding: 15px; }
 .preview-content img { max-width: 100%; }
 .preview-content table { border-collapse: collapse; }
-.preview-content td, .preview-content th { border: 1px solid #ddd; padding: 6px 13px; }
+.preview-content td, .preview-content th { border: 1px solid var(--line, #ddd); padding: 6px 13px; }
 .statusbar { height: 30px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 8px; font-size: 11px; color: var(--muted); background: var(--paper); }
 .statusbar-left { display: flex; align-items: center; gap: 5px; }
 .source-toggle { font-family: Consolas, monospace; font-size: 13px; }
