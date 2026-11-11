@@ -78,6 +78,25 @@ try{
  const content=async()=>{await client.until('!!document.querySelector(".ProseMirror")','visual editor after async remount');return js('(()=>{const e=document.querySelector(".ProseMirror").cloneNode(true);e.querySelectorAll(".inline-review").forEach(w=>w.remove());return e.textContent})()')}
  const submit=async prompt=>{if(await js('document.querySelector("#writing-agent").hidden'))await js('document.querySelector(".agent-entry").click()');await js(`document.querySelector('.agent-composer select').value='document';document.querySelector('.agent-composer textarea').value=${JSON.stringify(prompt)};document.querySelector('.agent-composer').requestSubmit()`)}
  const idle=()=>client.until('!document.querySelector(".agent-composer textarea").readOnly','AI reply')
+ await setDocument('# 山徑筆記\n\n沿著稜線前進。\n\n## 行前準備\n\n雨具與地圖。')
+ await js("if (!document.querySelector('#sidebar').offsetWidth) document.querySelector('.chrome-sidebar').click(); document.querySelector('#tab-outline').click()")
+ await client.until("document.querySelector('.outline-item[data-level=H2]')?.offsetWidth > 0", 'heading index in the sidebar')
+ assert(await js("document.querySelector('#tab-documents').getBoundingClientRect().bottom <= document.querySelector('#tab-outline').getBoundingClientRect().top"), 'Navigation uses a vertical rail')
+ await js("document.querySelector('.outline-item[data-level=H2]').click(); document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:400,clientY:160}))")
+ await js("[...document.querySelectorAll('.palette-categories button')].find(b=>b.textContent==='文字').click()")
+ assert(await js("[...document.querySelectorAll('.palette-commands button')].some(b=>b.textContent==='粗體' && !b.disabled)"), 'Text commands appear in the selected category')
+ const navigatorShot=await client.send('Page.captureScreenshot',{format:'png'})
+ await fs.writeFile(path.join(output,'writing-navigation.png'),Buffer.from(navigatorShot.data,'base64'))
+ await js("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true})); document.querySelector('#tab-documents').click()")
+ assert(await js("!document.querySelector('.writing-palette') && !!document.querySelector('.document-item.selected')?.offsetWidth"), 'Dismiss palette and switch to document cards')
+ const libraryShot=await client.send('Page.captureScreenshot',{format:'png'})
+ await fs.writeFile(path.join(output,'writing-files.png'),Buffer.from(libraryShot.data,'base64'))
+ await js("document.querySelector('.ProseMirror').focus(); const range=document.createRange(); range.selectNodeContents(document.querySelector('.ProseMirror p')); const selection=getSelection(); selection.removeAllRanges(); selection.addRange(range)")
+ await wait(150)
+ await js("document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:innerWidth-2,clientY:innerHeight-2}))")
+ assert(await js("document.querySelector('.writing-palette').getBoundingClientRect().right<=innerWidth && document.querySelector('.writing-palette').getBoundingClientRect().bottom<=innerHeight"), 'Palette fits at the viewport edge')
+ await js("[...document.querySelectorAll('.palette-categories button')].find(b=>b.textContent==='文字').click(); [...document.querySelectorAll('.palette-commands button')].find(b=>b.textContent==='粗體').click()")
+ await client.until("document.querySelector('.ProseMirror p strong')?.textContent==='沿著稜線前進。'", 'Formatting preserves the selected text')
  const old='今天下雨。我帶著筆記本出門。路上很安靜。\n\n保留 **粗體** 與 [連結](https://example.com)。'
  await setDocument(old);assert((await content()).includes('今天下雨。'))
  const lanBaseURL='http://192.168.0.120:8080/v1'

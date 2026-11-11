@@ -60,6 +60,7 @@ import './writing-agent.css'
 import './liquid-glass.css'
 import './tauri-desktop.css'
 import './preferences-panel.css'
+import './writing-navigation.css'
 import '@fontsource/pt-serif/latin-400.css'
 import '@fontsource/pt-serif/latin-400-italic.css'
 import '@fontsource/pt-serif/latin-700-italic.css'
@@ -381,6 +382,7 @@ function renderOutline(): void {
     const button = document.createElement('button')
     button.type = 'button'
     button.className = 'outline-item'
+    button.dataset.level = 'H' + heading.level
     button.style.setProperty('--depth', String(Math.min(heading.level - 1, 3)))
     button.textContent = heading.text
     button.title = heading.text
@@ -741,6 +743,15 @@ function bindEvents(): void {
   element<HTMLButtonElement>('source-toggle').addEventListener('click', () => setMode(mode === 'source' ? 'visual' : 'source'))
   element<HTMLButtonElement>('new-document').addEventListener('click', () => createDocument())
   ui.search.addEventListener('input', renderDocuments)
+  for (const tab of [ui.documentsTab, ui.outlineTab]) {
+    tab.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
+      event.preventDefault()
+      const next = tab === ui.documentsTab ? ui.outlineTab : ui.documentsTab
+      next.click()
+      next.focus()
+    })
+  }
   ui.documentsTab.addEventListener('click', () => setSidebarTab('documents'))
   ui.outlineTab.addEventListener('click', () => setSidebarTab('outline'))
   ui.sidebarToggle.addEventListener('click', () => {
@@ -880,6 +891,7 @@ async function renderTree(entries: FolderEntry[], container: HTMLElement, depth:
     const row = document.createElement('button')
     const relative=parent+'/'+entry.name
     row.className = 'tree-item'
+    row.dataset.kind = entry.directory ? 'folder' : 'file'
     row.style.paddingLeft = `${12 + depth * 16}px`
     row.textContent = `${entry.directory ? '▸  ' : '    '}${entry.name}`
     const children = document.createElement('div')

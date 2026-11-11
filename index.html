@@ -11,11 +11,12 @@
   <div id="app">
     <div id="mobile-backdrop" class="mobile-backdrop" hidden></div>
     <aside id="sidebar" class="sidebar" aria-label="文件導覽">
-      <div class="sidebar-switch" role="tablist" aria-label="側欄內容">
-        <button id="tab-documents" class="sidebar-tab active" role="tab" aria-selected="true">檔案</button>
-        <button id="tab-outline" class="sidebar-tab" role="tab" aria-selected="false">大綱</button>
+      <div class="sidebar-switch" role="tablist" aria-orientation="vertical" aria-label="側欄內容">
+        <button id="tab-documents" class="sidebar-tab active" role="tab" aria-selected="true" aria-controls="documents-panel"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7h6l2 2h10v10H3z"/><path d="M5 7V4h6l2 2h6v3"/></svg><span>檔案</span></button>
+        <button id="tab-outline" class="sidebar-tab" role="tab" aria-selected="false" aria-controls="outline-panel"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4v15m0-13h13M5 12h8M5 18h11"/></svg><span>大綱</span></button>
         <button id="sidebar-close" class="icon-button sidebar-close" aria-label="關閉側欄"></button>
       </div>
+      <div class="navigator-content">
       <div id="documents-panel" class="sidebar-panel">
         <label id="search-field" class="search-field" hidden><span id="search-icon"></span><input id="document-search" type="search" placeholder="搜尋" aria-label="搜尋文件" /></label>
         <span id="document-count" hidden>0</span>
@@ -37,6 +38,7 @@
           <div class="menu-divider"></div>
           <button id="show-shortcuts">鍵盤快捷鍵</button>
         </div>
+      </div>
       </div>
     </aside>
     <main class="main-shell">
