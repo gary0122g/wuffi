@@ -80,9 +80,9 @@ try{
  const idle=()=>client.until('!document.querySelector(".agent-composer textarea").readOnly','AI reply')
  await setDocument('# 山徑筆記\n\n沿著稜線前進。\n\n## 行前準備\n\n雨具與地圖。')
  await js("if (!document.querySelector('#sidebar').offsetWidth) document.querySelector('.chrome-sidebar').click(); document.querySelector('#tab-outline').click()")
- await client.until("document.querySelector('.outline-item[data-level=H2]')?.offsetWidth > 0", 'heading index in the sidebar')
+ await client.until("[...document.querySelectorAll('.outline-item')].find(b=>b.textContent==='行前準備')?.offsetWidth > 0", 'heading index in the sidebar')
  assert(await js("document.querySelector('#tab-documents').getBoundingClientRect().bottom <= document.querySelector('#tab-outline').getBoundingClientRect().top"), 'Navigation uses a vertical rail')
- await js("document.querySelector('.outline-item[data-level=H2]').click(); document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:400,clientY:160}))")
+ await js("[...document.querySelectorAll('.outline-item')].find(b=>b.textContent==='行前準備').click(); document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:400,clientY:160}))")
  await js("[...document.querySelectorAll('.palette-categories button')].find(b=>b.textContent==='文字').click()")
  assert(await js("[...document.querySelectorAll('.palette-commands button')].some(b=>b.textContent==='粗體' && !b.disabled)"), 'Text commands appear in the selected category')
  const navigatorShot=await client.send('Page.captureScreenshot',{format:'png'})
@@ -97,10 +97,10 @@ try{
    for (const panel of ['documents','outline']) {
      await js("document.querySelector('#tab-" + panel + "').click()")
      if (panel === 'outline') {
-       assert(await js("new Set([...document.querySelectorAll('.outline-item span')].map(title=>title.getBoundingClientRect().left)).size===1"), 'Aligned heading titles in ' + theme)
+       assert(await js("[...document.querySelectorAll('.outline-item span')].map(title=>title.getBoundingClientRect().left).every((left,i,all)=>!i || left===all[0]+12) && getComputedStyle(document.querySelector('.outline-item'),'::before').content==='none'"), 'Indented child heading without a level badge in ' + theme)
        const fold = "document.querySelector('.outline-fold')"
        await js(fold + ".click()")
-       assert.equal(await js("!!document.querySelector('.outline-item[data-level=H2]')"),false)
+       assert.equal(await js("!![...document.querySelectorAll('.outline-item')].find(b=>b.textContent==='行前準備')"),false)
        await js(fold + ".click()")
      }
      await js("document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:324,clientY:66}))")

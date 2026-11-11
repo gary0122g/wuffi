@@ -27,9 +27,8 @@
 .sidebar .outline-list { padding: 0 var(--nav-inset); }
 .sidebar .document-item-meta, .sidebar .document-item-date, .sidebar .folder-button { color: var(--nav-secondary); }
 .outline-entry { display: grid; grid-template-columns: minmax(0, 1fr) 28px; align-items: center; border-bottom: 1px solid var(--line); }
-.sidebar .outline-item { display: grid; grid-template-columns: 26px minmax(0, 1fr); align-items: center; gap: 8px; padding: 7px 4px; }
+.sidebar .outline-item { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; padding: 7px 4px; padding-inline-start: calc(4px + var(--depth, 0) * 12px); }
 .outline-item span { overflow: hidden; text-overflow: ellipsis; }
-.outline-item::before { content: attr(data-level); text-align: center; padding: 3px 0; border-radius: 4px; background: var(--nav-tint); color: var(--nav-accent); font: 11px/1.3 monospace; }
 .outline-fold { width: 28px; height: 28px; border: 0; border-radius: 5px; background: transparent; color: var(--nav-secondary); }
 .outline-fold:hover { background: var(--hover); }
 .writing-palette { position: fixed; z-index: 120; display: grid; grid-template-columns: minmax(64px, 32%) minmax(0,1fr); width: 316px; overflow: auto; overscroll-behavior: contain; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 13px; box-shadow: 0 6px 26px #0003; font-size: 13px; }

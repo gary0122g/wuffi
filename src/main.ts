@@ -382,7 +382,7 @@ function renderOutline(): void {
     const button = document.createElement('button')
     button.type = 'button'
     button.className = 'outline-item'
-    button.dataset.level = 'H' + heading.level
+    button.style.setProperty('--depth', String(heading.level - 1))
     const row = document.createElement('div')
     row.className = 'outline-entry'
     row.append(button)
