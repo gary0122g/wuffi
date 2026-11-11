@@ -1,13 +1,14 @@
-:root { --nav-tab-width: 48px; --nav-rail-inset: 4px; }
+:root { --nav-tab-width: 48px; --nav-rail-inset: 4px; --nav-rail-width: calc(var(--nav-tab-width) + 2 * var(--nav-rail-inset)); }
+body { --nav-tint: color-mix(in srgb, var(--ink) 8%, var(--side)); }
+.desktop-chrome .chrome-sidebar[aria-expanded=true] { background: var(--nav-tint); }
 .sidebar, .writing-palette {
   --nav-accent: var(--ink);
   --nav-inset: 8px;
   --nav-secondary: color-mix(in srgb, var(--ink) 74%, var(--paper));
-  --nav-tint: color-mix(in srgb, var(--ink) 8%, var(--side));
   font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
 }
 .sidebar { flex-direction: row; width: min(298px, 84vw); min-width: min(298px, 84vw); border-inline-end: 1px solid var(--line); }
-.sidebar-switch { flex-direction: column; align-items: center; width: calc(var(--nav-tab-width) + 2 * var(--nav-rail-inset)); height: auto; padding: var(--nav-inset) var(--nav-rail-inset); gap: 8px; background: var(--nav-tint); }
+.sidebar-switch { flex-direction: column; align-items: center; width: var(--nav-rail-width); height: auto; padding: var(--nav-inset) var(--nav-rail-inset); gap: 8px; background: var(--nav-tint); }
 .sidebar .sidebar-tab { display: grid; place-content: center; justify-items: center; gap: 4px; flex: none; width: var(--nav-tab-width); min-height: 52px; border: 0; border-radius: 12px; font-size: 11px; color: var(--ink); }
 .sidebar-tab svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .sidebar .sidebar-tab.active { background: var(--paper); color: var(--nav-accent); box-shadow: 0 1px 3px #0002; }

@@ -82,12 +82,15 @@ try{
  await js("if (!document.querySelector('#sidebar').offsetWidth) document.querySelector('.chrome-sidebar').click(); document.querySelector('#tab-outline').click()")
  await client.until("[...document.querySelectorAll('.outline-item')].find(b=>b.textContent==='行前準備')?.offsetWidth > 0", 'heading index in the sidebar')
  assert(await js(`(() => {
+   const toggle = document.querySelector('.chrome-sidebar').getBoundingClientRect()
+   const rail = document.querySelector('.sidebar-switch').getBoundingClientRect()
+   if (toggle.left !== 0 || rail.left !== 0 || toggle.right !== rail.right || toggle.bottom !== rail.top) return false
    const centers = ['.chrome-sidebar svg','#tab-documents svg','#tab-outline svg'].map(selector => {
      const box = document.querySelector(selector).getBoundingClientRect()
      return box.left + box.width / 2
    })
    return Math.max(...centers) - Math.min(...centers) < 0.5
- })()`), 'Title bar and navigation icons share a center line')
+ })()`), 'Title bar toggle meets the rail edge to edge and centers its icon')
  assert(await js("document.querySelector('#tab-documents').getBoundingClientRect().bottom <= document.querySelector('#tab-outline').getBoundingClientRect().top"), 'Navigation uses a vertical rail')
  await js("[...document.querySelectorAll('.outline-item')].find(b=>b.textContent==='行前準備').click(); document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:400,clientY:160}))")
  await js("[...document.querySelectorAll('.palette-categories button')].find(b=>b.textContent==='文字').click()")

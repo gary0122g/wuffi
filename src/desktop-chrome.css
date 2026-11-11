@@ -5,7 +5,7 @@ body.night .desktop-chrome { color:#d4d4d4; background:#1b1b1b; }
 .desktop-chrome button:hover,.desktop-chrome button[aria-expanded=true] { background:rgba(128,128,128,.16); }
 .desktop-chrome button:active { background:rgba(128,128,128,.25); }
 .desktop-chrome button:focus-visible { outline:2px solid #659bd4; outline-offset:-3px; }
-.chrome-sidebar { position:absolute; inset:0 auto 0 var(--nav-rail-inset); width:var(--nav-tab-width); height:32px; cursor:pointer!important; color:var(--muted)!important; opacity:.7; }
+.desktop-chrome .chrome-sidebar { position:absolute; inset:0 auto 0 0; width:var(--nav-rail-width); border-radius:0; height:32px; cursor:pointer!important; color:var(--muted)!important; opacity:.7; }
 .chrome-sidebar:hover,.chrome-sidebar[aria-expanded=true],.chrome-sidebar:focus-visible { opacity:1; }
 #seamless-document-title { display:block; position:absolute; left:150px; right:150px; top:0; height:32px; line-height:32px; font-size:12px; font-weight:600; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; }
 .chrome-menubar { height:36px; display:flex; align-items:center; justify-content:space-between; padding:0 6px; gap:8px; }
