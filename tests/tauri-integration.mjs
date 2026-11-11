@@ -91,6 +91,28 @@ try{
  assert(await js("!document.querySelector('.writing-palette') && !!document.querySelector('.document-item.selected')?.offsetWidth"), 'Dismiss palette and switch to document cards')
  const libraryShot=await client.send('Page.captureScreenshot',{format:'png'})
  await fs.writeFile(path.join(output,'writing-files.png'),Buffer.from(libraryShot.data,'base64'))
+ for (const theme of ['light','newsprint','night','glass']) {
+   await command('theme:' + theme)
+   await client.until("document.body.dataset.theme === " + JSON.stringify(theme), 'Apply ' + theme)
+   for (const panel of ['documents','outline']) {
+     await js("document.querySelector('#tab-" + panel + "').click()")
+     if (panel === 'outline') {
+       assert(await js("new Set([...document.querySelectorAll('.outline-item span')].map(title=>title.getBoundingClientRect().left)).size===1"), 'Aligned heading titles in ' + theme)
+       const fold = "document.querySelector('.outline-fold')"
+       await js(fold + ".click()")
+       assert.equal(await js("!!document.querySelector('.outline-item[data-level=H2]')"),false)
+       await js(fold + ".click()")
+     }
+     await js("document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:324,clientY:66}))")
+     await js("[...document.querySelectorAll('.palette-categories button')].find(b=>b.textContent==='文字').click()")
+     assert(await js("Math.abs(document.querySelector('.palette-categories button').getBoundingClientRect().top-document.querySelector('.palette-commands button').getBoundingClientRect().top)<1"), 'Aligned command columns in ' + theme)
+     const shot = await client.send('Page.captureScreenshot',{format:'png',clip:{x:0,y:0,width:662,height:283,scale:1}})
+     await fs.writeFile(path.join(output,theme+'-'+panel+'.png'),Buffer.from(shot.data,'base64'))
+     await js("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))")
+   }
+ }
+ await command('theme:light')
+ await js("document.querySelector('#tab-documents').click()")
  await js("document.querySelector('.ProseMirror').focus(); const range=document.createRange(); range.selectNodeContents(document.querySelector('.ProseMirror p')); const selection=getSelection(); selection.removeAllRanges(); selection.addRange(range)")
  await wait(150)
  await js("document.querySelector('.ProseMirror p').dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,button:2,clientX:innerWidth-2,clientY:innerHeight-2}))")

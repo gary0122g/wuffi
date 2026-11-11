@@ -383,14 +383,22 @@ function renderOutline(): void {
     button.type = 'button'
     button.className = 'outline-item'
     button.dataset.level = 'H' + heading.level
-    button.style.setProperty('--depth', String(Math.min(heading.level - 1, 3)))
-    button.textContent = heading.text
+    const row = document.createElement('div')
+    row.className = 'outline-entry'
+    row.append(button)
+    const title = document.createElement('span')
+    title.textContent = heading.text
+    button.append(title)
     button.title = heading.text
     if (preferences.outlineFold && hasChildren) {
-      const toggle = document.createElement('span'); toggle.textContent = collapsedHeadings.has(foldKey) ? '▸ ' : '▾ '
-      toggle.setAttribute('role','button'); toggle.setAttribute('aria-label','展開／折疊 ' + heading.text)
+      const toggle = document.createElement('button')
+      toggle.type = 'button'
+      toggle.className = 'outline-fold'
+      toggle.textContent = collapsedHeadings.has(foldKey) ? '▸' : '▾'
+      toggle.setAttribute('aria-expanded', String(!collapsedHeadings.has(foldKey)))
+      toggle.setAttribute('aria-label','展開／折疊 ' + heading.text)
       toggle.onclick = event => { event.stopPropagation(); collapsedHeadings.has(foldKey) ? collapsedHeadings.delete(foldKey) : collapsedHeadings.add(foldKey); renderOutline() }
-      button.prepend(toggle)
+      row.append(toggle)
     }
     button.addEventListener('click', () => {
       closeMobileSidebar()
@@ -405,7 +413,7 @@ function renderOutline(): void {
         sourceEditor.focus()
       }
     })
-    ui.outlineList.append(button)
+    ui.outlineList.append(row)
   })
 }
 
