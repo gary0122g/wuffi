@@ -24,9 +24,9 @@ No account is required for desktop editing or Local AI. No trial countdown, acti
 
 ## Download and install
 
-[Download for Windows x64](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.6)
+[Download for Windows x64](https://github.com/gary0122g/wuffi/releases/tag/v1.0.0-rc.7)
 
-Download `wuffi_1.0.0-rc.6_x64-setup.exe`, run the installer, then open **wuffi** from the Start menu. No Node.js, Rust, or compilation required. The installer downloads WebView2 if it is missing.
+Download `wuffi_1.0.0-rc.7_x64-setup.exe`, run the installer, then open **wuffi** from the Start menu. No Node.js, Rust, or compilation required. The installer downloads WebView2 if it is missing.
 
 This installer is not digitally signed, so Windows may show an unknown-publisher notice. SHA-256 checksums are included with the download. Supports Windows 10/11 x64.
 
